@@ -1,7 +1,7 @@
 clear all;close all;clc;
 warning off
 %% To make sure that matlab will find the functions. You must change it to your situation 
-relativepath_to_generalfolder='General'; % relative reference to General folder (assumes the folder is in you working folder)
+relativepath_to_generalfolder='C:\Users\20192100\OneDrive - TU Eindhoven\Documents\MATLAB\JetEngine\JetEngineMatlab\JetEngineMatlab\General'; % relative reference to General folder (assumes the folder is in you working folder)
 addpath(relativepath_to_generalfolder); 
 %% Load Nasadatabase
 TdataBase=fullfile('General','NasaThermalDatabase');
@@ -65,10 +65,17 @@ bore = 0.068;
 stroke = 0.054;
 rod = 0.091313;
 r = 8.5;
+RPM = 3000;
 
 %calculating swept volume and the clearance volume
 v_d = (pi/4)*bore^2*stroke;
-v_c = v_d/(r-1);                                                              %unclear
+v_c = v_d/(r-1); 
+
+%starting point
+p0 = p1;
+v0 = (v_d + v_c)/r
+
+%point 1
 v1 = v_d + v_c;
 v2 = v_c;
 g = 1.4;    %gamma
@@ -80,7 +87,7 @@ c = p1*v1^g;
 v_compression = engine_kinematics(bore,stroke,r,rod,180,0);
 p_compression =(c./v_compression.^g);
 %(p1*v1/T1)=(p2*v2/T2)|T2=(p2*v2*T2)/(p1*v1) 
-T2 =( p2*v2*T1/(p1*v1));
+T2 =(p2*v2*T1/(p1*v1));
 
 %calculation of state varibles at point 3 
 %(p2/T2)=(p3/T3)|v3=v2
@@ -95,21 +102,25 @@ c2 = p3*(v3)^g;
 v_expansion = engine_kinematics(bore,stroke,r,rod,0,180);
 p_expansion = c2./(v_expansion.^g);
 
+
 %plot figure
 figure(1)
 hold on
+plot(v0,p0,'*','color','r')
 plot(v1,p1,'*','color','r')
 plot(v2,p2,'*','color','r')
 plot(v3,p3,'*','color','r')
 plot(v4,p4,'*','color','r')
+P0=plot([v0 v1],[p0 p1],'-','color','blue');%isobaric expansion
 P1=plot(v_compression,p_compression,'color','m');%isentropic compression
 P2=plot([v2 v3],[p2 p3],'color','b');%constant volume heat addition
 P3=plot(v_expansion,p_expansion,'color','k');%isentropic expansion
 P4=plot([v4 v1],[p4,p1],'color','g');%constant volume heat rejection
+P5=plot([v1 v0],[p1 p0],'--','color','yellow');%isobaric compresion
 xlabel('volume ')
 ylabel('pressure')
 title({'PV Diagram';'Otto cycle'})
-legend([P1 P2 P3 P4],{'isentropic compression','constant volume heat addition','isentropic expansion','constant volume heat rejection'})
+legend([P0 P1 P2 P3 P4 P5],{'isobaric expansion','isentropic compression','constant volume heat addition','isentropic expansion','constant volume heat rejection', 'isobaric compression'})
 
 %thermal efficiency
 thermalefficiency=(1-1/r^(g-1))    
@@ -123,13 +134,57 @@ work = area34-area12%Work per cycle
 
 %%
 %Heat losses
-alpha=0.5%Heat transfer coefficient, should be between 0.3 and 0.8
-Tw=323%Estimation of the wall temperature of the engine (50 degrees celcius)
-dQdt = -alpha*A*(T3-Tw)
+
+%constants
+Tw = 323;      % Estimation of the wall temperature of the engine (50 degrees celcius)
+C0 = 120;    % between 110-130
+% P =       % dependent on crank angle function
+% A =       % dependent on crank angle function
+V_mp = 2*stroke*(RPM/60);
+
+% h_g = C0*bore^-0.2*P^0.8*((C1*V_mp)+(C2*(V_d*T1)/(p1*v1)*(P-P_mot)))^0.8*T^-0.53
+
+% step 0-1 (isobaric expansion)
+C1 = 6.18;
+C2 = 0;
+P = p0;
+T = T1;
+
+h_g_01 = C0*bore^-0.2*P^0.8*((C1*V_mp))^0.8*T^-0.53
+
+% dQdt = -h_g_01*A*(T-Tw)
+
+
+% step 1-2 (isentropic compression)
+C1 = 2.28;
+C2 = 0;
+P = p_compression;
+T = T2;
+% T = (p_compression.*v_compression*T1/(p1*v1);     % Unclear what T should be used and whether this should be a constant value or a function
+
+h_g_12 = C0*bore^-0.2*P.^0.8.*((C1*V_mp))^0.8*T^-0.53
+
+
+% dQdt = -h_g*A*(T3-Tw)
+
+
+
+return
 cv=cp/gamma_cv%Use NasaUseExample.m to retrieve cp and gamma. From this you can get cv. Gamma specific to substance.
 T4=(p4/p1)*T1%Calculated with ideal gas law
 Qc = cv*(MAir+MFuel)*(T4-T1)
+
+
+
+%%
+%efficiency
+
 efficiency = work/(work+Qc)
+
+
+
+
+
 
 return
 %%
