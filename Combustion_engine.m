@@ -43,13 +43,11 @@ mfurate = 1.3*density_gasoline*1/3600*kg/s;
 r = 8.5;
 
 x= SpS(1).Elcomp(3);                                                        %The amount of moles of carbon in the reactants, equal to the amount of moles of C02 in the products
-y= SpS(1).Elcomp(2);                                                        %the amount of moles of hydrogen in the reactants
-O2_consumed = (x+y)/4;                                                      %The amount of moles of 02 in the air consumed by the ideal stochiometric combustion proccess,from eq 3.29 in Turns
-% O2_consumed = (x + (y/4)) %@@Look which one it correct!
+y= SpS(1).Elcomp(2);                                                        %the amount of moles of hydrogen in the reactants                                             
+O2_consumed = (x + (y/4))                                                   %The amount of moles of 02 in the air consumed by the ideal stochiometric combustion proccess,from eq 3.29 in Turns
 MFuel = SpS(1).Mass;                                                        %defining the molar mass of the fuel in a variable from the SpS struct
 AF_stoic = 4.76 * O2_consumed * ( MAir / MFuel);                            %dirrectly from equation 3.30 in the book
 AF = AF_stoic;
-
 %%
 %state variables
 p1 = Pamb;
