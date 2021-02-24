@@ -1,7 +1,7 @@
 clear all;close all;clc;
 warning off
 %% To make sure that matlab will find the functions. You must change it to your situation 
-relativepath_to_generalfolder='C:\Users\20192100\OneDrive - TU Eindhoven\Documents\MATLAB\JetEngine\JetEngineMatlab\JetEngineMatlab\General'; % relative reference to General folder (assumes the folder is in you working folder)
+relativepath_to_generalfolder='General'; % relative reference to General folder (assumes the folder is in you working folder)
 addpath(relativepath_to_generalfolder); 
 %% Load Nasadatabase
 TdataBase=fullfile('General','NasaThermalDatabase');
