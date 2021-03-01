@@ -70,7 +70,6 @@ M_air = ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)*(O*2 + 3.76*N*2);   % [g
 % AF_stoi = (x_gas+y_gas/4-z_gas/2)*(O*2 + 3.76*N*2)/M_gas
 AF_stoi = M_air/(M_gas+M_eth)
 % lambda = AF/AF_stoi
-return
 %%
 %state variables
 p1 = Pamb;
