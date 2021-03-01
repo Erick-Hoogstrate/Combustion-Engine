@@ -42,7 +42,7 @@ C = Sp(myfind({Sp.Name},{'C'})).Mass * 1000;      % Carbon    [g/mol]
 H = Sp(myfind({Sp.Name},{'H'})).Mass * 1000;      % Hydrogen  [g/mol]
 O = Sp(myfind({Sp.Name},{'O'})).Mass * 1000;      % Oxygen    [g/mol]
 N = Sp(myfind({Sp.Name},{'N'})).Mass * 1000;      % Nitrogen  [g/mol]
-%% AF Gasoline
+%% Masses
 M_gas = C*x_gas + H*y_gas + O*z_gas;                        % [g]
 M_eth = C*x_eth + H*y_eth + O*z_eth;                        % [g]
 
