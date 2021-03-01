@@ -35,52 +35,49 @@ hair_a= Yair*hia';                                                          % Ma
 sair_a= Yair*sia';                                                          % same but this thermal part of entropy of air for range of T
 
 %% ---------------Code------------
-% %% Fuel composition
-% Yfuel = [1 0 0 0 0];                                                        % Only fuel
-% 
-% density_gasoline = 1.319;                                                    %kg/liter
-% mfurate = 1.3*density_gasoline*1/3600*kg/s;  
-% r = 8.5;
-% 
-% x= SpS(1).Elcomp(3);                                                        %The amount of moles of carbon in the reactants, equal to the amount of moles of C02 in the products
-% y= SpS(1).Elcomp(2);                                                        %the amount of moles of hydrogen in the reactants                                             
-% O2_consumed = (x + (y/4))                                                   %The amount of moles of 02 in the air consumed by the ideal stochiometric combustion proccess,from eq 3.29 in Turns
-% MFuel = SpS(1).Mass;                                                        %defining the molar mass of the fuel in a variable from the SpS struct
-% AF_stoic = 4.76 * O2_consumed * ( MAir / MFuel);                            %dirrectly from equation 3.30 in the book
-% AF = AF_stoic;
-
 %% Stoichiometric combustion
-% CxHyOz + (x + y/4-z/2)(O2) --> xCO2 + (y/2)H2O
-x_gas = SpS(1).Elcomp(3);
-y_gas = SpS(1).Elcomp(2);
-z_gas = 0;
+% (1-percentage)*Cx_gasHy_gasOz_gas + percentage*Cx_ethHy_ethOz_eth +
+% ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)(O2 + 3.76N2) -->
+% (x_gas+x_eth)CO2 + ((y_gas+y_eth)/2)H2O + ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)N2
 
-x_eth = 2;
-y_eth = 6;
-z_eth = 1;
+percentage = 15;
+
+% mol_gas = (100-percentage)*volume*density * molaire massa
+mol_gas = (100-percentage)*1*0.75* SpS(1).Mass*1000;                     % Density gasoline is from 0.71 to 0.77 g/cm3
+
+% mol_ethanol = percentage*volume*density * molaire massa
+mol_ethanol = percentage*1*0.78945* 46;                                  % Density Ethanol    0.78945 g/cm3 (at 20 ?C)
+
+
+x_gas = mol_gas*SpS(1).Elcomp(3); 
+y_gas = mol_gas*SpS(1).Elcomp(2); 
+z_gas = mol_gas*SpS(1).Elcomp(1); 
+
+x_eth = mol_ethanol*2;
+y_eth = mol_ethanol*6;
+z_eth = mol_ethanol*1;
+
 %% Molair masses
 C = Sp(myfind({Sp.Name},{'C'})).Mass * 1000;      % Carbon    [g/mol]
 H = Sp(myfind({Sp.Name},{'H'})).Mass * 1000;      % Hydrogen  [g/mol]
 O = Sp(myfind({Sp.Name},{'O'})).Mass * 1000;      % Oxygen    [g/mol]
 N = Sp(myfind({Sp.Name},{'N'})).Mass * 1000;      % Nitrogen  [g/mol]
-%% AF Gasoline
+%% AF Gasoline blend
 M_gas = C*x_gas + H*y_gas + O*z_gas;                        % [g]
-M_air_gas = (x_gas+(y_gas/4)-(z_gas/2))*(O*2 + 3.76*N*2);   % [g]
-MO2_gas = (x_gas+(y_gas/4)-(z_gas/2))*O*2;                  % [g]
-AF_st_gas = M_air_gas/M_gas
-
 M_eth = C*x_eth + H*y_eth + O*z_eth;                        % [g]
-M_air_eth = (x_eth+(y_eth/4)-(z_eth/2))*(O*2 + 3.76*N*2);   % [g]
-MO2_eth = (x_eth+(y_eth/4)-(z_eth/2))*O*2;                  % [g]
-AF_st_eth = M_air_eth/M_eth
+
+M_air = ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)*(O*2 + 3.76*N*2);   % [g]
+% AF_stoi = (x_gas+y_gas/4-z_gas/2)*(O*2 + 3.76*N*2)/M_gas
+AF_stoi = M_air/(M_gas+M_eth)
+% lambda = AF/AF_stoi
+return
 %%
 %state variables
 p1 = Pamb;
 T1 = Tamb;
 
 %input
-T3=2300;                                                                  %unclear
-%T3 = 503;
+T3=2300;                                                                   %unclear
 gamma = 1.4;
 
 %engine geometric parameters
@@ -282,7 +279,7 @@ end
 
 
 return
-cv = cp/gamma_cv%Use NasaUseExample.m to retrieve cp and gamma. From this you can get cv. Gamma specific to substance.
+cv = cv_function(percentage,T)%cv based on percentage ethanol and temperature
 T4=(p4/p1)*T1%Calculated with ideal gas law
 Qc = cv*(MAir+MFuel)*(T4-T1)
 
