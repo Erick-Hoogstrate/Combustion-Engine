@@ -1,14 +1,28 @@
 function [cv_mix] = cv_function(percentage,T)
 
 %% To make sure that matlab will find the functions. You must change it to your situation 
-abspath_to_generalfolder='Nasa'; % absolute reference to General folder
+abspath_to_generalfolder='General'; % absolute reference to General folder
 addpath(abspath_to_generalfolder); 
 %% Load Nasadatabase
-TdataBase=fullfile('Nasa','NasaThermalDatabase');
+TdataBase=fullfile('General','NasaThermalDatabase');
 load(TdataBase); %#ok<LOAD>
 global Runiv
 Runiv = 8.314;
 
+%% 
+DBdir = 'General\Nasa';
+DBname = 'NasaThermalDatabase';
+load(fullfile(DBdir,DBname));
+%% I want to find all alcohols in the database
+iCHO=myfind({El.Name},{'C','H','O'}); % Which position corresponds to C H and O elements in the Sp.Elcomp vector
+iH=iCHO(2);iC=iCHO(1);iO=iCHO(3);
+iAlc=[];ii=0;
+for i=1:length(Sp)
+    if ( Sp(i).Elcomp(iH)==(2*Sp(i).Elcomp(iC)+2) && Sp(i).Elcomp(iO)==1) % Typical comp of an alcohol 2*nC+2 H-atoms, 1 O-atom
+        ii = ii+1;
+        iAlc(ii)=i;
+    end;
+end
 %% Find index of species
 iSp = myfind({Sp.Name},{'Gasoline','O2','N2','CO2','H2O','C2H5OH'});
 iSp2 = myfind({Sp.Name},{'Gasoline','O2','CO2','H2O','N2'});                      % Find indexes of these species
@@ -64,5 +78,5 @@ cv_mix_gas = (M_gas/M_mix_gas)*cv(1)+(MO_gas/M_mix_gas)*cv(2)+(MN_gas/M_mix_gas)
 cv_mix_eth = (M_eth/M_mix_eth)*cv(6)+(MO_eth/M_mix_eth)*cv(2)+(MN_eth/M_mix_eth)*cv(3);
 
 % cv for blends of ethanol and gasoline [kJ/kgK]
-cv_mix = ((1-percentage)*cv_mix_gas + percentage*cv_mix_eth)./1000;
+cv_mix = ((100-percentage)*cv_mix_gas + percentage*cv_mix_eth)./1000;
 

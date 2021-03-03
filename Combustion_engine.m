@@ -36,11 +36,11 @@ sair_a= Yair*sia';                                                          % sa
 
 %% ---------------Code------------
 %% Stoichiometric combustion
-% (1-percentage)*Cx_gasHy_gasOz_gas + percentage*Cx_ethHy_ethOz_eth +
+% (100-percentage)*Cx_gasHy_gasOz_gas + percentage*Cx_ethHy_ethOz_eth +
 % ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)(O2 + 3.76N2) -->
 % (x_gas+x_eth)CO2 + ((y_gas+y_eth)/2)H2O + ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)N2
 
-percentage = 15;
+percentage = 5;
 
 % mol_gas = (100-percentage)*volume*density * molaire massa
 mol_gas = (100-percentage)*1*0.75* SpS(1).Mass*1000;                     % Density gasoline is from 0.71 to 0.77 g/cm3
@@ -74,10 +74,6 @@ AF_stoi = M_air/(M_gas+M_eth)
 %state variables
 p1 = Pamb;
 T1 = Tamb;
-
-%input
-T3=2300;                                                                   %unclear
-gamma = 1.4;
 
 %engine geometric parameters
 bore = 0.068;
@@ -113,6 +109,11 @@ T2 =(p2*v2*T1/(p1*v1));
 
 %calculation of state varibles at point 3 
 %(p2/T2)=(p3/T3)|v3=v2
+%input
+hv_gas = 45*10^3 %Between 44-46. This is de heating value for gasoline (value from the internet)
+hv_eth = 29.7*10^3 %This is de heating value for ethanol
+T3 = 0.5*AF_stoi*(((hv_gas*(M_gas))+(hv_eth*M_eth))/((cv_function(percentage,T2))*(M_gas+M_eth)))%Calculated with heating value [J/kg], the stoichiometric air to fuel ratio (AF_stoi), the specific heat capacity of fuel and air [J/kg K], the air and fuel inlet temperatures [K]
+%T3=998; %between 923-1073 Kelvin
 p3 = (p2*T3/T2);
 v3 = v2;
 
@@ -139,9 +140,9 @@ P2=plot([v2 v3],[p2 p3],'color','b');%isochoric heat addition
 P3=plot(v_expansion,p_expansion,'color','k');%isentropic expansion
 P4=plot([v4 v1],[p4,p1],'color','g');%isochoric heat rejection
 P5=plot([v1 v0],[p1 p0],'--','color','yellow');%isobaric compresion
-xlabel('volume ')
-ylabel('pressure')
-title({'PV Diagram';'Otto cycle'})
+xlabel('Volume [m^3]')
+ylabel('Pressure [Pa]')
+title({['PV Diagram'],[(sprintf('Otto cycle E%.0f', percentage))]})
 legend([P0 P1 P2 P3 P4 P5],{'isobaric expansion','isentropic compression','isochoric heat addition','isentropic expansion','isochoric heat rejection', 'isobaric compression'})
 
 %thermal efficiency
@@ -154,140 +155,140 @@ area34 = trapz(v_expansion,p_expansion)
 
 work = area34-area12%Work per cycle
 
-%%
-%Heat losses
-
-%constants
-Tw = 323;      % Estimation of the wall temperature of the engine (50 degrees celcius)
-C0 = 120;    % between 110-130
-% P =       % dependent on crank angle function
-V_mp = 2*stroke*(RPM/60);
-P_mot = 5*Pamb;
-
-% h_g = C0*bore^-0.2*P^0.8*((C1*V_mp)+(C2*(V_d*T1)/(p1*v1)*(P-P_mot)))^0.8*T^-0.53
-
-% step 0-1 (isobaric expansion)
-C1 = 6.18;
-C2 = 0;
-P_begin = p0;
-P_end = p1;
-T_begin = T0;
-T_end = T1;
-V_begin = v0;
-V_end = v1;
-% A_01 = 2*v1/radius  
-
-for T=T_begin:T_end
-    for P=P_begin:P_end
-        h_g_01 = C0*bore^-0.2*P^0.8*((C1*V_mp))^0.8*T^-0.53;
-    end
-    for v=V_begin:V_end
-        A_01 = 2*v/radius;
-    end
-    dQdt = -h_g_01*A_01*(T-Tw);
-end
-
-
-% step 1-2 (isentropic compression)
-C1 = 2.28;
-C2 = 0;
-P = p_compression;
-% P_begin = p0;
-% P_end = p1;
-T_begin = T1;
-T_end = T2;
-A_12 = 2*v_compression/radius;  
-% T = (p_compression.*v_compression*T1/(p1*v1);     % Unclear what T should be used and whether this should be a constant value or a function
-
-for T=T_begin:T_end
-%     for P=P_begin:P_end
-    h_g_12 = C0*bore^-0.2*P.^0.8.*((C1*V_mp))^0.8*T^-0.53;
-%     end
-    dQdt = -h_g_12.*A_12.*(T-Tw);
-end
-
-
-% step 2-3 (isochoric heat addition)
-C1 = 2.28;
-C2 = 3.24*10^-3;
-P_begin = p2;
-P_end = p3;
-T_begin = T2;
-T_end = T3;
-A_23 = 2*v2/radius;  
-
-for T=T_begin:T_end
-    for P=P_begin:P_end
-        h_g_23 = C0*bore^-0.2*P^0.8*((C1*V_mp)+(C2*(v_d*T1)/(p1*v1)*(P-P_mot)))^0.8*T^-0.53;
-    end
-    dQdt = -h_g_23*A_23*(T-Tw);
-end
-
-
-% step 3-4 (isentropic expansion)
-C1 = 2.28;
-C2 = 3.24*10^-3;
-P = p_expansion;
-% P_begin = p3;
-% P_end = p4;
-T_begin = T3;
-T_end = T4;
-A_34 = 2*v_expansion/radius;  
-
-for T=T_begin:T_end
-%     for P=P_begin:P_end
-    h_g_34 = C0*bore^-0.2*P^0.8*((C1*V_mp)+(C2*(v_d*T1)/(p1*v1)*(P-P_mot)))^0.8*T^-0.53;
-%     end
-    dQdt = -h_g_01*A_34*(T-Tw);
-end
-
-
-% Unknown which coefficients need to be used
-% % step 4-1 (isochoric heat rejection)
+% %%
+% %Heat losses
+% 
+% %constants
+% Tw = 323;      % Estimation of the wall temperature of the engine (50 degrees celcius)
+% C0 = 120;    % between 110-130
+% % P =       % dependent on crank angle function
+% V_mp = 2*stroke*(RPM/60);
+% P_mot = 5*Pamb;
+% 
+% % h_g = C0*bore^-0.2*P^0.8*((C1*V_mp)+(C2*(V_d*T1)/(p1*v1)*(P-P_mot)))^0.8*T^-0.53
+% 
+% % step 0-1 (isobaric expansion)
 % C1 = 6.18;
 % C2 = 0;
-% P = p0;
-% T = T1;
-% A_41 = 2*v1/radius;  
+% P_begin = p0;
+% P_end = p1;
+% T_begin = T0;
+% T_end = T1;
+% V_begin = v0;
+% V_end = v1;
+% % A_01 = 2*v1/radius  
 % 
-% h_g_01 = C0*bore^-0.2*P^0.8*((C1*V_mp))^0.8*T^-0.53;
-% dQdt = -h_g_01*A_41*(T-Tw);
-
-
-% step 1-0 (isobaric compression)
-C1 = 6.18;
-C2 = 0;
-P_begin = p1;
-P_end = p0;
-T_begin = T1;
-T_end = T0;
-V_begin = v1;
-V_end = v0;
-% A_10 = 2*v/radius;  
-
-for T=T_begin:T_end
-    for P=P_begin:P_end
-        h_g_10 = C0*bore^-0.2*P^0.8*((C1*V_mp))^0.8*T^-0.53;
-    end
-    for v=V_begin:V_end
-        A_10 = 2*v/radius; 
-    end
-    dQdt = -h_g_10*A_10*(T-Tw);
-end
-
-
-
-return
-cv = cv_function(percentage,T)%cv based on percentage ethanol and temperature
-T4=(p4/p1)*T1%Calculated with ideal gas law
-Qc = cv*(MAir+MFuel)*(T4-T1)
-
-%efficiency
-efficiency = work/(work+Qc)
-
-
-
-return
+% for T=T_begin:T_end
+%     for P=P_begin:P_end
+%         h_g_01 = C0*bore^-0.2*P^0.8*((C1*V_mp))^0.8*T^-0.53;
+%     end
+%     for v=V_begin:V_end
+%         A_01 = 2*v/radius;
+%     end
+%     dQdt = -h_g_01*A_01*(T-Tw);
+% end
+% 
+% 
+% % step 1-2 (isentropic compression)
+% C1 = 2.28;
+% C2 = 0;
+% P = p_compression;
+% % P_begin = p0;
+% % P_end = p1;
+% T_begin = T1;
+% T_end = T2;
+% A_12 = 2*v_compression/radius;  
+% % T = (p_compression.*v_compression*T1/(p1*v1);     % Unclear what T should be used and whether this should be a constant value or a function
+% 
+% for T=T_begin:T_end
+% %     for P=P_begin:P_end
+%     h_g_12 = C0*bore^-0.2*P.^0.8.*((C1*V_mp))^0.8*T^-0.53;
+% %     end
+%     dQdt = -h_g_12.*A_12.*(T-Tw);
+% end
+% 
+% 
+% % step 2-3 (isochoric heat addition)
+% C1 = 2.28;
+% C2 = 3.24*10^-3;
+% P_begin = p2;
+% P_end = p3;
+% T_begin = T2;
+% T_end = T3;
+% A_23 = 2*v2/radius;  
+% 
+% for T=T_begin:T_end
+%     for P=P_begin:P_end
+%         h_g_23 = C0*bore^-0.2*P^0.8*((C1*V_mp)+(C2*(v_d*T1)/(p1*v1)*(P-P_mot)))^0.8*T^-0.53;
+%     end
+%     dQdt = -h_g_23*A_23*(T-Tw);
+% end
+% 
+% 
+% % step 3-4 (isentropic expansion)
+% C1 = 2.28;
+% C2 = 3.24*10^-3;
+% P = p_expansion;
+% % P_begin = p3;
+% % P_end = p4;
+% T_begin = T3;
+% T_end = T4;
+% A_34 = 2*v_expansion/radius;  
+% 
+% for T=T_begin:T_end
+% %     for P=P_begin:P_end
+%     h_g_34 = C0*bore^-0.2*P^0.8*((C1*V_mp)+(C2*(v_d*T1)/(p1*v1)*(P-P_mot)))^0.8*T^-0.53;
+% %     end
+%     dQdt = -h_g_01*A_34*(T-Tw);
+% end
+% 
+% 
+% % Unknown which coefficients need to be used
+% % % step 4-1 (isochoric heat rejection)
+% % C1 = 6.18;
+% % C2 = 0;
+% % P = p0;
+% % T = T1;
+% % A_41 = 2*v1/radius;  
+% % 
+% % h_g_01 = C0*bore^-0.2*P^0.8*((C1*V_mp))^0.8*T^-0.53;
+% % dQdt = -h_g_01*A_41*(T-Tw);
+% 
+% 
+% % step 1-0 (isobaric compression)
+% C1 = 6.18;
+% C2 = 0;
+% P_begin = p1;
+% P_end = p0;
+% T_begin = T1;
+% T_end = T0;
+% V_begin = v1;
+% V_end = v0;
+% % A_10 = 2*v/radius;  
+% 
+% for T=T_begin:T_end
+%     for P=P_begin:P_end
+%         h_g_10 = C0*bore^-0.2*P^0.8*((C1*V_mp))^0.8*T^-0.53;
+%     end
+%     for v=V_begin:V_end
+%         A_10 = 2*v/radius; 
+%     end
+%     dQdt = -h_g_10*A_10*(T-Tw);
+% end
+% 
+% 
+% 
+% return
+% cv = cv_function(percentage,T)%cv based on percentage ethanol and temperature
+% T4=(p4/p1)*T1%Calculated with ideal gas law
+% Qc = cv*(MAir+MFuel)*(T4-T1)
+% 
+% %efficiency
+% efficiency = work/(work+Qc)
+% 
+% 
+% 
+% return
 %%
 %Power
 dt_no = 0.0378%Time per cycle, no load
