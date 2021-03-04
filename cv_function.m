@@ -25,9 +25,6 @@ for i=1:length(Sp)
 end
 %% Find index of species
 iSp = myfind({Sp.Name},{'Gasoline','O2','N2','CO2','H2O','C2H5OH'});
-iSp2 = myfind({Sp.Name},{'Gasoline','O2','CO2','H2O','N2'});                      % Find indexes of these species
-SpS=Sp(iSp2);                                                                % Subselection of the database in the order according to {'Gasoline','O2','CO2','H2O','N2'}
-
 
 % Cv
 cv = [CvNasa(T,Sp(iSp(1))), CvNasa(T,Sp(iSp(2))), CvNasa(T,Sp(iSp(3))), CvNasa(T,Sp(iSp(4))), CvNasa(T,Sp(iSp(5))), CvNasa(T,Sp(iSp(6)))];
@@ -38,14 +35,14 @@ cv = [CvNasa(T,Sp(iSp(1))), CvNasa(T,Sp(iSp(2))), CvNasa(T,Sp(iSp(3))), CvNasa(T
 % (x_gas+x_eth)CO2 + ((y_gas+y_eth)/2)H2O + ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)N2
 
 % mol_gas = (100-percentage)*volume*density * molaire massa
-mol_gas = (100-percentage)*1*0.75* SpS(1).Mass*1000;                        % Density gasoline is from 0.71 to 0.77 g/cm3
+mol_gas = (100-percentage)*1*0.75* Sp(iSp(1)).Mass*1000;                        % Density gasoline is from 0.71 to 0.77 g/cm3
 
 % mol_ethanol = percentage*volume*density * molaire massa
 mol_ethanol = percentage*1*0.78945* 46;                                     % Density Ethanol    0.78945 g/cm3 (at 20 ?C)
 
-x_gas = mol_gas*SpS(1).Elcomp(3); 
-y_gas = mol_gas*SpS(1).Elcomp(2); 
-z_gas = mol_gas*SpS(1).Elcomp(1); 
+x_gas = mol_gas*Sp(iSp(1)).Elcomp(3); 
+y_gas = mol_gas*Sp(iSp(1)).Elcomp(2); 
+z_gas = mol_gas*Sp(iSp(1)).Elcomp(1); 
 
 x_eth = mol_ethanol*2;
 y_eth = mol_ethanol*6;
@@ -75,7 +72,7 @@ M_mix_eth = M_eth + M_eth_air;  % total mass reactants 100% ethanol combustion
 
 % cv for gasoline and ethanol mixtures [J/KgK]
 cv_mix_gas = (M_gas/M_mix_gas)*cv(1)+(MO_gas/M_mix_gas)*cv(2)+(MN_gas/M_mix_gas)*cv(3);
-cv_mix_eth = (M_eth/M_mix_eth)*cv(6)+(MO_eth/M_mix_eth)*cv(2)+(MN_eth/M_mix_eth)*cv(3);
+cv_mix_eth = min(0,(M_eth/M_mix_eth)*cv(6)+(MO_eth/M_mix_eth)*cv(2)+(MN_eth/M_mix_eth)*cv(3));
 
 % cv for blends of ethanol and gasoline [kJ/kgK]
 cv_mix = ((100-percentage)*cv_mix_gas + percentage*cv_mix_eth)./1000;
