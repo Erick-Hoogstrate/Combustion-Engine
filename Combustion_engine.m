@@ -40,7 +40,7 @@ sair_a= Yair*sia';                                                          % sa
 % ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)(O2 + 3.76N2) -->
 % (x_gas+x_eth)CO2 + ((y_gas+y_eth)/2)H2O + ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)N2
 
-percentage = 0;
+percentage = 5;
 
 % mol_gas = (100-percentage)*volume*density * molaire massa
 mol_gas = (100-percentage)*1*0.75* SpS(1).Mass*1000;                     % Density gasoline is from 0.71 to 0.77 g/cm3
