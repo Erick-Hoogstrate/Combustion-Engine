@@ -135,12 +135,12 @@ plot(v2,p2,'*','color','r')
 plot(v3,p3,'*','color','r')
 plot(v4,p4,'*','color','r')
 set(gca,'FontSize',30)
-P0=plot([v0 v1],[p0 p1],'-','color','blue');%isobaric expansion
-P1=plot(v_compression,p_compression,'color','m');%isentropic compression
-P2=plot([v2 v3],[p2 p3],'color','b');%isochoric heat addition
-P3=plot(v_expansion,p_expansion,'color','k');%isentropic expansion
-P4=plot([v4 v1],[p4,p1],'color','g');%isochoric heat rejection
-P5=plot([v1 v0],[p1 p0],'--','color','yellow');%isobaric compresion
+P0=plot([v0 v1],[p0 p1],'-','color','blue','LineWidth',8);%isobaric expansion
+P1=plot(v_compression,p_compression,'color','m','LineWidth',8);%isentropic compression
+P2=plot([v2 v3],[p2 p3],'color','b','LineWidth',8);%isochoric heat addition
+P3=plot(v_expansion,p_expansion,'color','k','LineWidth',8);%isentropic expansion
+P4=plot([v4 v1],[p4,p1],'color','g','LineWidth',8);%isochoric heat rejection
+P5=plot([v1 v0],[p1 p0],'--','color','yellow','LineWidth',8);%isobaric compresion
 xlabel('Volume [m^3]')
 ylabel('Pressure [Pa]')
 title({['PV Diagram'],[(sprintf('Otto cycle E%.0f', percentage))]}, 'FontSize', 50)
