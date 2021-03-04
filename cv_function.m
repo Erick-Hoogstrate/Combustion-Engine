@@ -13,7 +13,7 @@ Runiv = 8.314;
 DBdir = 'General\Nasa';
 DBname = 'NasaThermalDatabase';
 load(fullfile(DBdir,DBname));
-%% I want to find all alcohols in the database
+%% Add ethanol to database
 iCHO=myfind({El.Name},{'C','H','O'}); % Which position corresponds to C H and O elements in the Sp.Elcomp vector
 iH=iCHO(2);iC=iCHO(1);iO=iCHO(3);
 iAlc=[];ii=0;

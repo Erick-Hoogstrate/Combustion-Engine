@@ -40,7 +40,7 @@ sair_a= Yair*sia';                                                          % sa
 % ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)(O2 + 3.76N2) -->
 % (x_gas+x_eth)CO2 + ((y_gas+y_eth)/2)H2O + ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)N2
 
-percentage = 5;
+percentage = 0;
 
 % mol_gas = (100-percentage)*volume*density * molaire massa
 mol_gas = (100-percentage)*1*0.75* SpS(1).Mass*1000;                     % Density gasoline is from 0.71 to 0.77 g/cm3
@@ -76,22 +76,22 @@ p1 = Pamb;
 T1 = Tamb;
 
 %engine geometric parameters
-bore = 0.068;
-stroke = 0.054;
-radius = bore/2;
-rod = 0.091313;
+bore = 0.068; %m
+stroke = 0.054; %m
+radius = bore/2; %m
+rod = 0.091313; %m
 r = 8.5;                                                                    %compression ratio
 RPM = 3000;
 
 %calculating swept volume and the clearance volume
-v_d = (pi/4)*bore^2*stroke;
-v_c = v_d/(r-1); 
+v_d = (pi/4)*bore^2*stroke; %m^3
+v_c = v_d/(r-1); %m^3
 
 
 %point 1
-v1 = v_d + v_c;
-v2 = v_c;
-g = 1.4;    %gamma
+v1 = v_d + v_c; %m^3
+v2 = v_c; %m^3
+g = 1.4; %gamma
 
 %starting point / point 0
 p0 = p1;
@@ -110,9 +110,9 @@ T2 =(p2*v2*T1/(p1*v1));
 %calculation of state varibles at point 3 
 %(p2/T2)=(p3/T3)|v3=v2
 %input
-hv_gas = 45*10^3 %Between 44-46. This is de heating value for gasoline (value from the internet)
-hv_eth = 29.7*10^3 %This is de heating value for ethanol
-T3 = 0.5*AF_stoi*(((hv_gas*(M_gas))+(hv_eth*M_eth))/((cv_function(percentage,T2))*(M_gas+M_eth)))%Calculated with heating value [J/kg], the stoichiometric air to fuel ratio (AF_stoi), the specific heat capacity of fuel and air [J/kg K], the air and fuel inlet temperatures [K]
+hv_gas = 45*10^6 %J/kg. Between 44-46. This is de heating value for gasoline (value from the internet)
+hv_eth = 29.7*10^6 %J/kg. This is de heating value for ethanol
+T3 = 0.5*(AF_stoi*10^-3)*(((hv_gas*((M_gas*10^-3)))+(hv_eth*(M_eth*10^-3)))/((cv_function(percentage,T2))*((M_gas*10^-3)+(M_eth*10^-3))))%Calculated with heating value [J/kg], the stoichiometric air to fuel ratio (AF_stoi), the specific heat capacity of fuel and air [J/kg K], the air and fuel inlet temperatures [K]
 %T3=998; %between 923-1073 Kelvin
 p3 = (p2*T3/T2);
 v3 = v2;
@@ -134,6 +134,7 @@ plot(v1,p1,'*','color','r')
 plot(v2,p2,'*','color','r')
 plot(v3,p3,'*','color','r')
 plot(v4,p4,'*','color','r')
+set(gca,'FontSize',30)
 P0=plot([v0 v1],[p0 p1],'-','color','blue');%isobaric expansion
 P1=plot(v_compression,p_compression,'color','m');%isentropic compression
 P2=plot([v2 v3],[p2 p3],'color','b');%isochoric heat addition
@@ -142,7 +143,7 @@ P4=plot([v4 v1],[p4,p1],'color','g');%isochoric heat rejection
 P5=plot([v1 v0],[p1 p0],'--','color','yellow');%isobaric compresion
 xlabel('Volume [m^3]')
 ylabel('Pressure [Pa]')
-title({['PV Diagram'],[(sprintf('Otto cycle E%.0f', percentage))]})
+title({['PV Diagram'],[(sprintf('Otto cycle E%.0f', percentage))]}, 'FontSize', 50)
 legend([P0 P1 P2 P3 P4 P5],{'isobaric expansion','isentropic compression','isochoric heat addition','isentropic expansion','isochoric heat rejection', 'isobaric compression'})
 
 %thermal efficiency
@@ -153,7 +154,7 @@ thermalefficiency=(1-1/r^(g-1))
 area12 = trapz(-v_compression,p_compression)                                 %start for calculation work
 area34 = trapz(v_expansion,p_expansion)
 
-work = area34-area12%Work per cycle
+work = area34-area12 %pa*m^3 is equal to J. Work per cycle
 
 % %%
 % %Heat losses
@@ -295,7 +296,7 @@ dt_no = 0.0378%Time per cycle, no load
 dt_full = 0.040065%Time per cycle, full load
 dt_half = 0.0389344545%Time per cycle, half load
 
-power = work/dt_no%Power per cycle
+power = work/dt_no%J/s is equal to W. Power per cycle
 
 return
 %%
