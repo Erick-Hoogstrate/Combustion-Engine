@@ -41,6 +41,7 @@ sair_a= Yair*sia';                                                          % sa
 % (x_gas+x_eth)CO2 + ((y_gas+y_eth)/2)H2O + ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)N2
 
 percentage = 5;
+load = "full"; %no,half,full load
 
 % mol_gas = (100-percentage)*volume*density * molaire massa
 mol_gas = (100-percentage)*1*0.75* SpS(1).Mass*1000;                     % Density gasoline is from 0.71 to 0.77 g/cm3
@@ -68,7 +69,7 @@ M_eth = C*x_eth + H*y_eth + O*z_eth;                        % [g]
 
 M_air = ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)*(O*2 + 3.76*N*2);   % [g]
 % AF_stoi = (x_gas+y_gas/4-z_gas/2)*(O*2 + 3.76*N*2)/M_gas
-AF_stoi = M_air/(M_gas+M_eth)
+AF_stoi = M_air/(M_gas+M_eth);
 % lambda = AF/AF_stoi
 %%
 %state variables
@@ -95,7 +96,7 @@ g = 1.4; %gamma
 
 %starting point / point 0
 p0 = p1;
-v0 = (v_d + v_c)/r
+v0 = (v_d + v_c)/r;
 T0 =(p0*v0*T1/(p1*v1));
 
 %calculation of state variables at state point 2
@@ -110,11 +111,17 @@ T2 =(p2*v2*T1/(p1*v1));
 %calculation of state varibles at point 3 
 %(p2/T2)=(p3/T3)|v3=v2
 %input
-hv_gas = 45*10^6 %J/kg. Between 44-46. This is de heating value for gasoline (value from the internet)
-hv_eth = 29.7*10^6 %J/kg. This is de heating value for ethanol
+hv_gas = 45*10^6; %J/kg. Between 44-46. This is de heating value for gasoline (value from the internet)
+hv_eth = 29.7*10^6; %J/kg. This is de heating value for ethanol
 T3 = 0.5*(AF_stoi*10^-3)*(((hv_gas*((M_gas*10^-3)))+(hv_eth*(M_eth*10^-3)))/((cv_function(percentage,T2))*((M_gas*10^-3)+(M_eth*10^-3))))%Calculated with heating value [J/kg], the stoichiometric air to fuel ratio (AF_stoi), the specific heat capacity of fuel and air [J/kg K], the air and fuel inlet temperatures [K]
 %T3=998; %between 923-1073 Kelvin
-p3 = (p2*T3/T2);
+if load == "no"
+    p3 = (p2*T3/T2)*0.1;
+elseif load == "half"
+    p3 = (p2*T3/T2)*0.15;
+elseif load == "full"
+    p3 = (p2*T3/T2)*0.3;
+end
 v3 = v2;
 
 %calculation of state varibes at point 4
@@ -143,7 +150,7 @@ P4=plot([v4 v1],[p4,p1],'color','g','LineWidth',8);%isochoric heat rejection
 P5=plot([v1 v0],[p1 p0],'--','color','yellow','LineWidth',8);%isobaric compresion
 xlabel('Volume [m^3]')
 ylabel('Pressure [Pa]')
-title({['PV Diagram'],[(sprintf('Otto cycle E%.0f', percentage))]}, 'FontSize', 50)
+title({['PV Diagram'],(sprintf('Otto cycle E%.0f %s load', [percentage, load]))}, 'FontSize', 50)
 legend([P0 P1 P2 P3 P4 P5],{'isobaric expansion','isentropic compression','isochoric heat addition','isentropic expansion','isochoric heat rejection', 'isobaric compression'})
 
 %thermal efficiency
@@ -151,10 +158,25 @@ thermalefficiency=(1-1/r^(g-1))
 
 %%
 %Work
-area12 = trapz(-v_compression,p_compression)                                 %start for calculation work
-area34 = trapz(v_expansion,p_expansion)
+area12 = trapz(-v_compression,p_compression);                                 %start for calculation work
+area34 = trapz(v_expansion,p_expansion);
 
 work = area34-area12 %pa*m^3 is equal to J. Work per cycle
+
+measured_voltage = 203;
+%Determines the amperes. No load is 0, half load is 4 and full load is 7.3 (See Arjan&Sven SSA)
+if load == "no"
+    P_out = measured_voltage * 0;
+elseif load == "half"
+    P_out = measured_voltage * 4;
+elseif load == "full"
+    P_out = measured_voltage * 7.3;
+end
+V_dis = pi/4 * bore^2 * stroke * 4;
+p_me = (p1+p2+p3+p4)/4;
+W = p_me * V_dis;
+P_in = W * (50/2);
+mechanical_efficiency = P_out / P_in;
 
 % %%
 % %Heat losses
@@ -292,11 +314,17 @@ work = area34-area12 %pa*m^3 is equal to J. Work per cycle
 % return
 %%
 %Power
-dt_no = 0.0378%Time per cycle, no load
-dt_full = 0.040065%Time per cycle, full load
-dt_half = 0.0389344545%Time per cycle, half load
+dt_no = 0.0378;%Time per cycle, no load
+dt_half = 0.0389344545;%Time per cycle, half load
+dt_full = 0.040065;%Time per cycle, full load
 
-power = work/dt_no%J/s is equal to W. Power per cycle
+if load == "no"
+    power = work/dt_no%J/s is equal to W. Power per cycle
+elseif load == "half"
+    power = work/dt_half%J/s is equal to W. Power per cycle
+elseif load == "full"
+    power = work/dt_full%J/s is equal to W. Power per cycle
+end
 
 return
 
