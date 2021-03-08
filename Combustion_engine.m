@@ -299,29 +299,41 @@ dt_half = 0.0389344545%Time per cycle, half load
 power = work/dt_no%J/s is equal to W. Power per cycle
 
 return
+
 %%
 % Initialisation
 p(1)=P0;T(1)=T0;
 pad(1)=p(1);
-Ca(1)=0.0;V(1)=Vcyl(Ca(1),S,B,l,rc); % Vcyl is a function that
-% computes cyl vol as fie of crank-
-% angle for given B,S,l and rc
-m(1)=p(1)*V(1)/Rg/T(1);
+v_c = v_d/(r-1);
+Ca(1)=61;
+V(1)=v_c %(Ca(1),stroke,bore,rod,radius); % Vcyl is a function that computes cyl vol as fie of crank-angle for given B,S,l and rc
+%m(1)=p(1)*V(1)/Runiv/T(1); %ye
+
+m_E0_NL= 0.0000079; % Mass is constant, valves are closed, density=0.74 g/cm^3, mass per cycle
+mf=m_E0_NL
+m(1) = m_E0_NL;
+
+a = 5
+n = 3
 %
 %
 % Loop over crank-angle, with 'for' construction
 NCa=360; % Number of crank-angles
 dCa=0.5; % Stepsize
 NSteps=NCa/dCa;
+
+
 for i=2:NSteps,
     Ca(i)=Ca(i-1)+dCa;
-    V(i)=Vcyl(Ca(i),S,B,l,rc); % New volume for current crank-angle
+    V(i)= pi*(bore/2)^2*(rod+r-(r*cosd(Ca(i))+sqrt(rod^2-r^2*(sind(Ca(i)))^2)))+v_c; % New volume for current crank-angle
     m(i)=m(i-1); % Mass is constant, valves are closed
     dV=V(i)-V(i-1); % Volume change
-    dQcom = YourModel(Ca(i)); % Heat Release by combustion
+    Q_LHV= 43.4e6
+    theta_d= 240
+    xb= 1-exp(-a*((Ca(i)-Ca(1)/theta_d)^n));
+    dQcom = Q_LHV*mf*n*a*(1-xb)/theta_d*(Ca(i)-Ca(1)/theta_d)^(n-1); % Heat Release by combustion
     dT=(dQcom-p(i-1)*dV)/Cv/m(i-1); % 1st Law dU=dQ-pdV (closed system)
-    % adiabatic closed system with constant
-    % gas composition and constant Cv
+    A(i)= (pi/2)*bore^2+pi*bore*(stroke/2)*((1/r)+1-cosd(Ca(i))+sqrt((1/r)^2-sind(Ca(i)))^2);
     T(i)=T(i-1)+dT;
     p(i)=m(i)*Rg*T(i)/V(i); % Gaslaw
 end;
