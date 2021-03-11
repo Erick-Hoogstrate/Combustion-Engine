@@ -80,7 +80,8 @@ T1 = Tamb;
 bore = 0.068; %m
 stroke = 0.054; %m
 radius = bore/2; %m
-rod = 0.091313; %m
+r_crank = stroke/2;       % Radius of the crankshaft[m] (half the stroke)
+r_cyl   = bore/2;         % Radius cyllinder [m]
 r = 8.5;                                                                    %compression ratio
 RPM = 3000;
 
@@ -92,7 +93,7 @@ v_c = v_d/(r-1); %m^3
 %point 1
 v1 = v_d + v_c; %m^3
 v2 = v_c; %m^3
-g = 1.4; %gamma
+gamma = 1.4; %gamma
 
 %starting point / point 0
 p0 = p1;
@@ -178,139 +179,13 @@ W = p_me * V_dis;
 P_in = W * (50/2);
 mechanical_efficiency = P_out / P_in;
 
-% %%
-% %Heat losses
-% 
-% %constants
-% Tw = 323;      % Estimation of the wall temperature of the engine (50 degrees celcius)
-% C0 = 120;    % between 110-130
-% % P =       % dependent on crank angle function
-% V_mp = 2*stroke*(RPM/60);
-% P_mot = 5*Pamb;
-% 
-% % h_g = C0*bore^-0.2*P^0.8*((C1*V_mp)+(C2*(V_d*T1)/(p1*v1)*(P-P_mot)))^0.8*T^-0.53
-% 
-% % step 0-1 (isobaric expansion)
-% C1 = 6.18;
-% C2 = 0;
-% P_begin = p0;
-% P_end = p1;
-% T_begin = T0;
-% T_end = T1;
-% V_begin = v0;
-% V_end = v1;
-% % A_01 = 2*v1/radius  
-% 
-% for T=T_begin:T_end
-%     for P=P_begin:P_end
-%         h_g_01 = C0*bore^-0.2*P^0.8*((C1*V_mp))^0.8*T^-0.53;
-%     end
-%     for v=V_begin:V_end
-%         A_01 = 2*v/radius;
-%     end
-%     dQdt = -h_g_01*A_01*(T-Tw);
-% end
-% 
-% 
-% % step 1-2 (isentropic compression)
-% C1 = 2.28;
-% C2 = 0;
-% P = p_compression;
-% % P_begin = p0;
-% % P_end = p1;
-% T_begin = T1;
-% T_end = T2;
-% A_12 = 2*v_compression/radius;  
-% % T = (p_compression.*v_compression*T1/(p1*v1);     % Unclear what T should be used and whether this should be a constant value or a function
-% 
-% for T=T_begin:T_end
-% %     for P=P_begin:P_end
-%     h_g_12 = C0*bore^-0.2*P.^0.8.*((C1*V_mp))^0.8*T^-0.53;
-% %     end
-%     dQdt = -h_g_12.*A_12.*(T-Tw);
-% end
-% 
-% 
-% % step 2-3 (isochoric heat addition)
-% C1 = 2.28;
-% C2 = 3.24*10^-3;
-% P_begin = p2;
-% P_end = p3;
-% T_begin = T2;
-% T_end = T3;
-% A_23 = 2*v2/radius;  
-% 
-% for T=T_begin:T_end
-%     for P=P_begin:P_end
-%         h_g_23 = C0*bore^-0.2*P^0.8*((C1*V_mp)+(C2*(v_d*T1)/(p1*v1)*(P-P_mot)))^0.8*T^-0.53;
-%     end
-%     dQdt = -h_g_23*A_23*(T-Tw);
-% end
-% 
-% 
-% % step 3-4 (isentropic expansion)
-% C1 = 2.28;
-% C2 = 3.24*10^-3;
-% P = p_expansion;
-% % P_begin = p3;
-% % P_end = p4;
-% T_begin = T3;
-% T_end = T4;
-% A_34 = 2*v_expansion/radius;  
-% 
-% for T=T_begin:T_end
-% %     for P=P_begin:P_end
-%     h_g_34 = C0*bore^-0.2*P^0.8*((C1*V_mp)+(C2*(v_d*T1)/(p1*v1)*(P-P_mot)))^0.8*T^-0.53;
-% %     end
-%     dQdt = -h_g_01*A_34*(T-Tw);
-% end
-% 
-% 
-% % Unknown which coefficients need to be used
-% % % step 4-1 (isochoric heat rejection)
-% % C1 = 6.18;
-% % C2 = 0;
-% % P = p0;
-% % T = T1;
-% % A_41 = 2*v1/radius;  
-% % 
-% % h_g_01 = C0*bore^-0.2*P^0.8*((C1*V_mp))^0.8*T^-0.53;
-% % dQdt = -h_g_01*A_41*(T-Tw);
-% 
-% 
-% % step 1-0 (isobaric compression)
-% C1 = 6.18;
-% C2 = 0;
-% P_begin = p1;
-% P_end = p0;
-% T_begin = T1;
-% T_end = T0;
-% V_begin = v1;
-% V_end = v0;
-% % A_10 = 2*v/radius;  
-% 
-% for T=T_begin:T_end
-%     for P=P_begin:P_end
-%         h_g_10 = C0*bore^-0.2*P^0.8*((C1*V_mp))^0.8*T^-0.53;
-%     end
-%     for v=V_begin:V_end
-%         A_10 = 2*v/radius; 
-%     end
-%     dQdt = -h_g_10*A_10*(T-Tw);
-% end
-% 
-% 
-% 
-% return
+
 % cv = cv_function(percentage,T)%cv based on percentage ethanol and temperature
 % T4=(p4/p1)*T1%Calculated with ideal gas law
 % Qc = cv*(MAir+MFuel)*(T4-T1)
 % 
 % %efficiency
 % efficiency = work/(work+Qc)
-% 
-% 
-% 
 % return
 %%
 %Power
@@ -326,42 +201,175 @@ elseif load == "full"
     power = work/dt_full%J/s is equal to W. Power per cycle
 end
 
-return
+%% REAL CYCLE
+%% Intake pressure
 
-%%
-% Initialisation
-p(1)=P0;T(1)=T0;
-pad(1)=p(1);
-v_c = v_d/(r-1);
-Ca(1)=61;
-V(1)=v_c %(Ca(1),stroke,bore,rod,radius); % Vcyl is a function that computes cyl vol as fie of crank-angle for given B,S,l and rc
-%m(1)=p(1)*V(1)/Runiv/T(1); %ye
+intake_pressure = [0.21 0.34 0.44; 0.28 0.39 0.46; 0.31 0.41 0.50; -0.12 0.35 0.55]; % rows represent fuels (E0 upper row), columns represent loads (NL first column)
+                                                                                     % values derived from average pressure plots experimental data
+fuel_mass_exp   = [4.071 5.3597 7.9903; 3.3331 4.9078 6.7648; 3.8139 4.8079 6.0022; 3.1186 4.2123 5.8703]*10^-6;   % idem 
+                                                                                     
+if percentage == 0
+    E_row = 1;
+elseif percentage == 5
+    E_row = 2;
+elseif percentage == 10
+    E_row = 3;
+elseif percentage == 15
+    E_row = 4;
+end
 
-m_E0_NL= 0.0000079; % Mass is constant, valves are closed, density=0.74 g/cm^3, mass per cycle
-mf=m_E0_NL
-m(1) = m_E0_NL;
+if load == "no"
+    load_column = 1;
+elseif load == "half"
+    load_column = 2;
+elseif load == "full"
+    load_column = 3;
+end
 
-a = 5
-n = 3
-%
-%
-% Loop over crank-angle, with 'for' construction
-NCa=360; % Number of crank-angles
-dCa=0.5; % Stepsize
-NSteps=NCa/dCa;
+p_int = intake_pressure(E_row,load_column);     % intake pressure
 
+mf = fuel_mass_exp(E_row,load_column);          % fuel mass per cycle
 
-for i=2:NSteps,
-    Ca(i)=Ca(i-1)+dCa;
-    V(i)= pi*(bore/2)^2*(rod+r-(r*cosd(Ca(i))+sqrt(rod^2-r^2*(sind(Ca(i)))^2)))+v_c; % New volume for current crank-angle
-    m(i)=m(i-1); % Mass is constant, valves are closed
-    dV=V(i)-V(i-1); % Volume change
-    Q_LHV= 43.4e6
-    theta_d= 240
-    xb= 1-exp(-a*((Ca(i)-Ca(1)/theta_d)^n));
-    dQcom = Q_LHV*mf*n*a*(1-xb)/theta_d*(Ca(i)-Ca(1)/theta_d)^(n-1); % Heat Release by combustion
-    dT=(dQcom-p(i-1)*dV)/Cv/m(i-1); % 1st Law dU=dQ-pdV (closed system)
-    A(i)= (pi/2)*bore^2+pi*bore*(stroke/2)*((1/r)+1-cosd(Ca(i))+sqrt((1/r)^2-sind(Ca(i)))^2);
-    T(i)=T(i-1)+dT;
-    p(i)=m(i)*Rg*T(i)/V(i); % Gaslaw
+mmix = (1 + AF_stoi)*mf                         % mix (fuel + air) mass per cycle
+%% Start and end CA per step
+
+% 1. Intake
+Ca_int_start    = 0;
+Ca_int_end      = 180;
+
+% 2. Compression
+Ca_comp_start   = Ca_int_end;
+Ca_comp_end     = 340;
+
+% 3. Combustion
+Ca_comb_start   = Ca_comp_end;      
+Ca_comb_end     = 400;           
+dCa_comb        = Ca_comb_end - Ca_comb_start;
+
+% Note that the combustion ends before the exhaust valves open
+
+% 4. Exhaust
+Ca_ex_start     = 540;
+Ca_ex_stop      = 720;
+
+%% Combustion heat release (Wiebe)
+
+% Wiebe variables
+a = 5;
+n = 3;
+Q_LHV = 43.4e6;             % [J/kg]
+theta_d = dCa_comb;         % ca difference start and end combustion 400-340
+theta_s = Ca_comb_start;    % ca at start of combustion
+
+% Defining angle range
+theta = Ca_comb_start:1:Ca_comb_end;        % Wiebe function only applies in this region
+theta(1) = theta_s;
+
+NTheta = 360;               % Number of crank-angles
+dTheta = 0.5;               % Stepsize
+NSteps = NTheta/dTheta;
+
+% Angle difference cannot be negative
+if theta < theta_s;
+   theta - theta_s  == 0;
+end
+
+for i = 1:length(theta)
+    xb(i) = 1 - exp(-a*((theta(i)-theta_s)/theta_d)^n);                           % Fraction of burned fuel
+    dQcom(i) = Q_LHV*mf*n*a*(1-xb(i))/theta_d*((theta(i)-theta_s)/theta_d)^(n-1); % Heat Release by combustion
 end;
+
+
+%% Real cycle
+Ca=0:1:720;                          % defining CA length
+
+V=zeros(length(Ca));                 % empty volume array with length CA
+T=zeros(length(Ca));                 % empty temperature array with length CA
+p=zeros(length(Ca));                 % empty pressure array with length CA
+
+dQl=zeros(length(Ca));               % empty heat loss array with length CA
+dQtot = 0;                           % adiabatic 
+
+for dCa=2:length(Ca)+1
+    V(dCa)= pi*(bore/2)^2*(rod+r_crank-(r_crank*cosd(dCa)+sqrt(rod^2-r_crank^2*(sind(dCa))^2)))+ v_c;          % Volume dependent on crank-angle
+    
+    % Defining a loop for each step to compute dQ, and subsequently T and p
+    
+    % Intake
+    if dCa <= Ca_int_end   
+        T(dCa) = T1;
+        p(dCa) = p1;
+        
+        dQwall(dCa) = dQwall_loss(dCa-1,dCa,T(dCa-1),p(dCa-1),p_int, gamma);
+    end
+    
+    % Compression
+    if (Ca_comp_start < dCa)&&(dCa < Ca_comp_end)                 
+    
+        cv = cv_function(percentage,T(dCa-1));
+        R_g = Runiv;
+
+        dV = V(dCa)-V(dCa-1);                                   
+        dQwall(dCa) = dQwall_loss(dCa-1,dCa,T(dCa-1),p(dCa-1),p_int, gamma);
+        dU = dQwall(dCa) - ((p(dCa-1).*dV)./1000);                     % Via first law of thermodynamics
+        dT = dU./(cv.*mmix);                                           
+        
+        T(dCa) = T(dCa-1) + dT;
+        p(dCa) = (mmix.*R_g.*T(dCa))./V(dCa);
+    end
+    
+    % Combustion
+    if (Ca_comb_start <= dCa) && (dCa < Ca_comb_end)                
+        cv = cv_function(percentage,T(dCa-1));
+        R_g = Runiv;
+        
+        dV = V(dCa)-V(dCa-1); 
+        Qwall(dCa) = dQwall_loss(dCa-1,dCa,T(dCa-1),p(dCa-1),p_int, gamma);
+        dU = dQcom(dCa-Ca_comb_start+1) + dQwall(dCa) - ...
+            ((p(dCa-1,:).*dV)./1000);                                      
+        dT = dU./(cv.*mmix);                                           
+        
+        T(dCa) = T(dCa-1) + dT;
+        p(dCa) = (mmix.*R_g.*T(dCa))./V(dCa);
+    end  
+    
+    % Between end combustion and opening valves
+    if (Ca_comb_end <= dCa) && (dCa < Ca_ex_start)       
+        cv = cv_function(percentage,T(dCa-1));
+        R_g = Runiv;
+        
+        dV = V(dCa)-V(dCa-1);                                       
+        Qwall(dCa) = dQwall_loss(dCa-1,dCa,T(dCa-1),p(dCa-1),p_int, gamma);
+        dU = dQwall(dCa) - ((p(dCa-1).*dV)./1000);                    
+        dT = dU./(cv.*mmix);                                           
+        
+        T(dCa) = T(dCa-1) + dT;
+        p(dCa) = (mmix.*R_g.*T(dCa))./V(dCa);
+    end
+    
+    % Exhaust valves open
+    if (dCa == Ca_ex_start)   
+        p(dCa) = Pamb;
+        T(dCa) = (P_amb.*T(dCa-1,:))./p(dCa-1,:);
+    end
+    
+    % Between closing exhaust valves and opening intake valves
+    if (Ca_ex_start < dCa) && (dCa < Ca_int_start)
+        p(dCa) = P_amb;
+        T(dCa) = T(dCa-1);
+    end
+    
+    % Intake valves open
+    if (dCa == Ca_int_start)
+        p(dCa) = p_int;
+        T(dCa)=(p_int.*T(dCa-1,:))./p(dCa-1,:);
+    end
+    
+    % General loop boundary condition
+    if (Ca_int_start < dCa) && (dCa <= 721)
+        p(dCa) = p(dCa-1);
+        T(dCa) = T(dCa-1);
+    end
+end
+
+
