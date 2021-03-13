@@ -102,10 +102,10 @@ T0 =(p0*v0*T1/(p1*v1));
 
 %calculation of state variables at state point 2
 %p2*v2^g=p1*v1^g
-p2 = p1*r^g;
-c = p1*v1^g;
+p2 = p1*r^gamma;
+c = p1*v1^gamma;
 v_compression = engine_kinematics(bore,stroke,r,rod,180,0);
-p_compression =(c./v_compression.^g);
+p_compression =(c./v_compression.^gamma);
 %(p1*v1/T1)=(p2*v2/T2)|T2=(p2*v2*T2)/(p1*v1) 
 T2 =(p2*v2*T1/(p1*v1));
 
@@ -128,10 +128,10 @@ v3 = v2;
 %calculation of state varibes at point 4
 %p3*v3^gamma=p4*v4^gammma
 v4 = v1;
-p4 = p3*(v3/v4)^g;
-c2 = p3*(v3)^g;
+p4 = p3*(v3/v4)^gamma;
+c2 = p3*(v3)^gamma;
 v_expansion = engine_kinematics(bore,stroke,r,rod,0,180);
-p_expansion = c2./(v_expansion.^g);
+p_expansion = c2./(v_expansion.^gamma);
 
 
 %plot figure
@@ -155,7 +155,7 @@ title({['PV Diagram'],(sprintf('Otto cycle E%.0f %s load', [percentage, load]))}
 legend([P0 P1 P2 P3 P4 P5],{'isobaric expansion','isentropic compression','isochoric heat addition','isentropic expansion','isochoric heat rejection', 'isobaric compression'})
 
 %thermal efficiency
-thermalefficiency=(1-1/r^(g-1))    
+thermalefficiency=(1-1/r^(gamma-1))    
 
 %%
 %Work
