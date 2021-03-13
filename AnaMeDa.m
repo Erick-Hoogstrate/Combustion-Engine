@@ -15,7 +15,7 @@ opts = setvaropts(opts, 1, "WhitespaceRule", "preserve");
 opts = setvaropts(opts, [1, 3], "EmptyFieldRule", "auto");
 
 % Import the data
-data = readtable("C:\Users\20192420\Documents\Q3 Y2\AnaMeDa\Group08.xlsx", opts, "UseExcel", false); %file location on computer
+data = readtable("\Group08.xlsx", opts, "UseExcel", false); %file location on computer
 
 lot               = data.Lot;
 blend_speed       = data.BlendSpeed;
@@ -29,18 +29,58 @@ dissolution       = data.Dissolution;
 clear opts
 
 %% 
-rows = 1:88 %number of rows
+rows = 1:88; %number of rows
 
-dissolution_fraction = dissolution/100 %calculating dissolution fraction
+dissolution_fraction = dissolution/100; %calculating dissolution fraction
 
+% a)
 figure()
 plot(rows, dissolution_fraction)
 title('Overview of data')
-xlabel('all different measurements')
-ylabel('dissolution_fraction')
+xlabel('Number of measurements')
+ylabel('Dissolution_{fraction} [-]')
 
+
+figure()
+plot(dissolution_fraction,'o'); title('Index plot of dissolution fraction'); xlabel('Index'); ylabel('Result'); grid on; 
+
+figure()
+histogram(dissolution_fraction); title('Histogram of dissolution fraction'), xlabel('Result'), ylabel('Frequency'); grid on; 
+
+figure()
+ksdensity(dissolution_fraction); title('Density trace of dissolution fraction'), xlabel('Result'), ylabel('Density'); grid on; 
+
+figure()
+boxplot(dissolution_fraction); title('Boxplot of dissolution fraction'), xlabel('Result'); grid on; 
+
+
+x = dissolution_fraction;
+EDA_x = [length(x),min(x),max(x),range(x)]
+EDA_y=[mean(x),median(x),length(x)] 
+EDA_z=[std(x),var(x),iqr(x)] 
+
+
+% b)
+mean_value = mean(dissolution_fraction)
 standard_diviation = std(dissolution_fraction) %standard_diviation
-x = mean(dissolution_fraction) %mean value
+length_value = length(dissolution_fraction) 
 
+
+x = mean(dissolution_fraction) %mean value
 u = (1+standard_diviation)/(sqrt(88)) %So a 68% confidence interval leads to x +/- u, (sqrt(88) because of 88 total values and 1 because that is the z-value for a 68% confidence interval)
+
+
+se = std(dissolution_fraction)/sqrt(length(dissolution_fraction)) % 68% confidence interval 
+
+
+
+% c)
+x = dissolution_fraction;
+Y = log10((x/100)/(1-x/100)); %Dissolution log-ratio
+
+% std/var(x)*(derrivative of Y with respect to x)^2
+calc = std(x).*((100)/(log(10).*x.*(-x+100))).^2;
+
+mean_value_dissolution_log = mean(calc)
+se_dissolution_log = std(calc)/sqrt(length(calc))
 
