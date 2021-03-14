@@ -80,6 +80,7 @@ T1 = Tamb;
 bore = 0.068; %m
 stroke = 0.054; %m
 radius = bore/2; %m
+rod  = 0.091313;    %[m]
 r_crank = stroke/2;       % Radius of the crankshaft[m] (half the stroke)
 r_cyl   = bore/2;         % Radius cyllinder [m]
 r = 8.5;                                                                    %compression ratio
