@@ -52,7 +52,7 @@ p_ref = P_amb;     % ambient pressure
 
 % Heat transfer coefficient calculation
 p_m = p_ref.*(V_ref./V).^gamma;
-v = C1.*U_p+C2.*((v_d.*Tamb)./(p_ref.*V_ref)).*(p-p_m);
+v = C1.*MPS+C2.*((v_d.*Tamb)./(p_ref.*V_ref)).*(p-p_m);
 coefficient = 0.013.*(bore^-0.2).*(p.^0.8).*(T.^-0.53).*(v.^0.8);
 
 A_1 = pi*r_cyl^2; 
