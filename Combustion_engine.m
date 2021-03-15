@@ -205,9 +205,9 @@ end
 %% REAL CYCLE
 %% Intake pressure
 
-intake_pressure = [0.21 0.34 0.44; 0.28 0.39 0.46; 0.31 0.41 0.50; -0.12 0.35 0.55]; % rows represent fuels (E0 upper row), columns represent loads (NL first column)
-                                                                                     % values derived from average pressure plots experimental data
-fuel_mass_exp   = [4.071 5.3597 7.9903; 3.3331 4.9078 6.7648; 3.8139 4.8079 6.0022; 3.1186 4.2123 5.8703]*10^-6;   % idem 
+intake_pressure = [0.21 0.34 0.44; 0.28 0.39 0.46; 0.31 0.41 0.50; -0.12 0.35 0.55].*10^5; % rows represent fuels (E0 upper row), columns represent loads (NL first column)
+                                                                                           % values derived from average pressure plots experimental data
+fuel_mass_exp   = [4.071 5.3597 7.9903; 3.3331 4.9078 6.7648; 3.8139 4.8079 6.0022; 3.1186 4.2123 5.8703].*10^-6;   % idem 
                                                                                      
 if percentage == 0
     E_row = 1;
@@ -228,6 +228,7 @@ elseif load == "full"
 end
 
 p_int = intake_pressure(E_row,load_column);     % intake pressure
+P_amb=1.01235e5;                                % Reference pressure, 1 atm!
 
 mf = fuel_mass_exp(E_row,load_column);          % fuel mass per cycle
 
@@ -258,7 +259,14 @@ Ca_ex_stop      = 720;
 % Wiebe variables
 a = 5;
 n = 3;
-Q_LHV = 43.4e6;             % [J/kg]
+
+den_g = 0.74;       % [kg/L] (only used in ratio, so unit not very important)
+den_e = 0.78945;    % [kg/L]
+den_mix = (den_g*(100-percentage) + den_e*percentage)./100
+
+mass_perc_E = percentage.*(den_g./den_mix);
+Q_LHV = ((100 - percentage)./100).*43.4e3 + (percentage./100).*26.95e3;             % [kJ/kg]
+
 theta_d = dCa_comb;         % ca difference start and end combustion 400-340
 theta_s = Ca_comb_start;    % ca at start of combustion
 
@@ -278,8 +286,8 @@ end
 for i = 1:length(theta)
     xb(i) = 1 - exp(-a*((theta(i)-theta_s)/theta_d)^n);                           % Fraction of burned fuel
     dQcom(i) = Q_LHV*mf*n*a*(1-xb(i))/theta_d*((theta(i)-theta_s)/theta_d)^(n-1); % Heat Release by combustion
+    dQcom_T = transpose(dQcom);
 end;
-
 
 %% Real cycle
 Ca=0:1:720;                          % defining CA length
@@ -291,7 +299,7 @@ p=zeros(length(Ca));                 % empty pressure array with length CA
 dQl=zeros(length(Ca));               % empty heat loss array with length CA
 dQtot = 0;                           % adiabatic 
 
-for dCa=2:length(Ca)+1
+for dCa=1:length(Ca)
     V(dCa)= pi*(bore/2)^2*(rod+r_crank-(r_crank*cosd(dCa)+sqrt(rod^2-r_crank^2*(sind(dCa))^2)))+ v_c;          % Volume dependent on crank-angle
     
     % Defining a loop for each step to compute dQ, and subsequently T and p
@@ -299,16 +307,16 @@ for dCa=2:length(Ca)+1
     % Intake
     if dCa <= Ca_int_end   
         T(dCa) = T1;
-        p(dCa) = p1;
+        p(dCa) = p_int;
         
-        dQwall(dCa) = dQwall_loss(dCa-1,dCa,T(dCa-1),p(dCa-1),p_int, gamma);
+        dQwall(dCa) = dQwall_loss(dCa-1,dCa,T(dCa),p(dCa),p_int, gamma);
     end
     
     % Compression
     if (Ca_comp_start < dCa)&&(dCa < Ca_comp_end)                 
-    
-        cv = cv_function(percentage,T(dCa-1));
-        R_g = Runiv;
+        [cv_mix, cp_mix, Rg_mix] = CvCpRg_reactants(percentage, T(dCa-1));
+        cv = cv_mix;
+        R_g = Rg_mix;
 
         dV = V(dCa)-V(dCa-1);                                   
         dQwall(dCa) = dQwall_loss(dCa-1,dCa,T(dCa-1),p(dCa-1),p_int, gamma);
@@ -318,29 +326,34 @@ for dCa=2:length(Ca)+1
         T(dCa) = T(dCa-1) + dT;
         p(dCa) = (mmix.*R_g.*T(dCa))./V(dCa);
     end
-    
+
     % Combustion
     if (Ca_comb_start <= dCa) && (dCa < Ca_comb_end)                
-        cv = cv_function(percentage,T(dCa-1));
-        R_g = Runiv;
+       [cv_burned, cp_burned, Rg_burned] = CvCpRg_burned(percentage, T(dCa-1), xb(dCa-Ca_comb_start+1));
+
+        cv = cv_burned;
+        R_g = Rg_burned;
         
         dV = V(dCa)-V(dCa-1); 
-        Qwall(dCa) = dQwall_loss(dCa-1,dCa,T(dCa-1),p(dCa-1),p_int, gamma);
-        dU = dQcom(dCa-Ca_comb_start+1) + dQwall(dCa) - ...
-            ((p(dCa-1,:).*dV)./1000);                                      
+        dQwall(dCa) = dQwall_loss(dCa-1,dCa,T(dCa-1),p(dCa-1),p_int, gamma);
+        dU = dQcom(dCa-Ca_comb_start+1) +dQwall(dCa) - ...       % look at transpose wiebe
+            ((p(dCa-1).*dV)./1000); 
+     
         dT = dU./(cv.*mmix);                                           
         
         T(dCa) = T(dCa-1) + dT;
         p(dCa) = (mmix.*R_g.*T(dCa))./V(dCa);
     end  
-    
+     
     % Between end combustion and opening valves
     if (Ca_comb_end <= dCa) && (dCa < Ca_ex_start)       
-        cv = cv_function(percentage,T(dCa-1));
-        R_g = Runiv;
+       [cv_prod, cp_prod, Rg_prod] = CvCpRg_products(percentage, T(dCa-1));
+
+        cv = cv_prod;
+        R_g = Rg_prod;
         
         dV = V(dCa)-V(dCa-1);                                       
-        Qwall(dCa) = dQwall_loss(dCa-1,dCa,T(dCa-1),p(dCa-1),p_int, gamma);
+        dQwall(dCa) = dQwall_loss(dCa-1,dCa,T(dCa-1),p(dCa-1),p_int, gamma);
         dU = dQwall(dCa) - ((p(dCa-1).*dV)./1000);                    
         dT = dU./(cv.*mmix);                                           
         
@@ -351,7 +364,7 @@ for dCa=2:length(Ca)+1
     % Exhaust valves open
     if (dCa == Ca_ex_start)   
         p(dCa) = Pamb;
-        T(dCa) = (P_amb.*T(dCa-1,:))./p(dCa-1,:);
+        T(dCa) = (P_amb.*T(dCa-1))./p(dCa-1);
     end
     
     % Between closing exhaust valves and opening intake valves
@@ -363,14 +376,19 @@ for dCa=2:length(Ca)+1
     % Intake valves open
     if (dCa == Ca_int_start)
         p(dCa) = p_int;
-        T(dCa)=(p_int.*T(dCa-1,:))./p(dCa-1,:);
+        T(dCa)=(p_int.*T(dCa-1))./p(dCa-1);
     end
     
     % General loop boundary condition
-    if (Ca_int_start < dCa) && (dCa <= 721)
-        p(dCa) = p(dCa-1);
-        T(dCa) = T(dCa-1);
+    if (Ca_int_start  < dCa) && (dCa <= 721)
+        p(dCa) = p(dCa);
+        T(dCa) = T(dCa);
     end
 end
+
+figure()
+plot(V,p*10^-5)
+xlabel('Volume [m^3]')
+ylabel('Pressure [Bar]')
 
 
