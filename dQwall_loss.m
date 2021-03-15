@@ -32,30 +32,34 @@ Ca_comb_start   = Ca_comp_end;
 Ca_comb_end     = 400; 
 
 % Coefficients and formulas have to be validated
-if (Ca2<=Ca_int_end) || (Ca2>=Ca_comb_end)
-    C1=6.18;
-    C2=0;
+
+if (Ca_comb_start<=Ca2) && (Ca2<Ca_comb_end)
+    C1=2.28;
+    C2=3.24*10^-3;
+   
 elseif (Ca_comp_start<Ca2)&&(Ca2<Ca_comp_end)
     C1=2.28;
     C2=0;
-elseif (Ca_comb_start<=Ca2) && (Ca2<Ca_comb_end)
-    C1=2.28;
-    C2=3.24*10^-3;
+    
+elseif (Ca2<=Ca_int_end) || (Ca2>=Ca_comb_end)
+    C1=6.18;
+    C2=0;
 end
 
 V_ref = v_d;       % reference volume equals V at BDC
-p_ref = p_int;     % intake pressure
+P_amb=1.01235e5;
+p_ref = P_amb;     % ambient pressure
 
 % Heat transfer coefficient calculation
 p_m = p_ref.*(V_ref./V).^gamma;
-v = C1.*MPS+C2.*((v_d.*Tamb)./(p_ref.*V_ref)).*(p-p_m);
-coefficient = 0.01297829376.*(bore^-0.2).*(p.^0.8).*(T.^-0.53).*(v.^0.8)
+v = C1.*U_p+C2.*((v_d.*Tamb)./(p_ref.*V_ref)).*(p-p_m);
+coefficient = 0.013.*(bore^-0.2).*(p.^0.8).*(T.^-0.53).*(v.^0.8);
 
-A1 = pi*r_cyl^2; 
-A2 = 2*pi*r_cyl*(rod+r_crank-(r_crank*cosd(Ca1)+sqrt(rod^2-r_crank^2*(sind(Ca1))^2))); 
-Atot = 2*A1 + A2; 
+A_1 = pi*r_cyl^2; 
+A_2 = 2*pi*r_cyl*(rod+r_crank-(r_crank*cosd(Ca1)+sqrt(rod^2-r_crank^2*(sind(Ca1))^2))); 
+A_tot = 2*A_1 + A_2; 
 
 % Heat loss 
-dQdt = -coefficient.*(T-Tw).*Atot; 
+dQ = -coefficient.*(T-Tw).*A_tot; 
 dt = (1/(RPM/60))/360;                      % duration per CA
-dQ_loss = dQdt.*dt.*(Ca2-Ca1)./1000;        % total heat loss      UNCERTAIN WHAT UNIT WILL BE J or kJ
+dQ_loss = dQ.*dt.*(Ca2-Ca1)./1000;          % total heat loss   [kJ]
