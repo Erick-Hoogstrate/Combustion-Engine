@@ -390,3 +390,12 @@ figure()
 plot(V,p*10^-5)
 xlabel('Volume [m^3]')
 ylabel('Pressure [Bar]')
+
+%%
+angle = 0:1:720;
+figure()
+plot(angle,p*10^-5)
+xlabel('Crank angle [\theta]')
+ylabel('Pressure [Bar]')
+xlim([0 720])
+title('Pressure vs crank angle (E0 full load)')
