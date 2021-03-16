@@ -232,7 +232,7 @@ P_amb=1.01235e5;                                % Reference pressure, 1 atm!
 
 mf = fuel_mass_exp(E_row,load_column);          % fuel mass per cycle
 
-mmix = (1 + AF_stoi)*mf                         % mix (fuel + air) mass per cycle
+mmix = (1 + AF_stoi)*mf;                        % mix (fuel + air) mass per cycle
 %% Start and end CA per step
 
 % 1. Intake
@@ -262,7 +262,7 @@ n = 3;
 
 den_g = 0.74;       % [kg/L] (only used in ratio, so unit not very important)
 den_e = 0.78945;    % [kg/L]
-den_mix = (den_g*(100-percentage) + den_e*percentage)./100
+den_mix = (den_g*(100-percentage) + den_e*percentage)./100;
 
 mass_perc_E = percentage.*(den_g./den_mix);
 Q_LHV = ((100 - percentage)./100).*43.4e3 + (percentage./100).*26.95e3;             % [kJ/kg]
