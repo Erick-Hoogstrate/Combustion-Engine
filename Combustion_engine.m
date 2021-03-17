@@ -317,6 +317,7 @@ for dCa=1:length(Ca)
         [Cv_before, Cp_before, Rg_before] = before_comb(percentage, T(dCa-1));
         cv = Cv_before;
         R_g = Rg_before;
+        gamma = Cp_before/Cv_before;
 
         dV = V(dCa)-V(dCa-1);                                   
         dQwall(dCa) = dQwall_loss(dCa-1,dCa,T(dCa-1),p(dCa-1),p_int, gamma);
@@ -333,6 +334,7 @@ for dCa=1:length(Ca)
 
         cv = Cv_during;
         R_g = Rg_during;
+        gamma = Cp_during/Cv_during;
         
         dV = V(dCa)-V(dCa-1); 
         dQwall(dCa) = dQwall_loss(dCa-1,dCa,T(dCa-1),p(dCa-1),p_int, gamma);
@@ -347,10 +349,11 @@ for dCa=1:length(Ca)
      
     % Between end combustion and opening valves
     if (Ca_comb_end <= dCa) && (dCa < Ca_ex_start)       
-       [Cv_after, Cv_after, Rg_after] = after_comb(percentage, T(dCa-1));
+       [Cv_after, Cp_after, Rg_after] = after_comb(percentage, T(dCa-1));
 
         cv = Cv_after;
         R_g = Rg_after;
+        gamma = Cp_after/Cv_after;
         
         dV = V(dCa)-V(dCa-1);                                       
         dQwall(dCa) = dQwall_loss(dCa-1,dCa,T(dCa-1),p(dCa-1),p_int, gamma);
