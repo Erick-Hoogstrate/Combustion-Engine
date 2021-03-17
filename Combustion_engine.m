@@ -290,7 +290,7 @@ for i = 1:length(theta)
 end;
 
 %% Real cycle
-Ca=0:1:720;                          % defining CA length
+Ca=0:1:719;                          % defining CA length
 
 V=zeros(length(Ca));                 % empty volume array with length CA
 T=zeros(length(Ca));                 % empty temperature array with length CA
@@ -305,7 +305,7 @@ for dCa=1:length(Ca)
     % Defining a loop for each step to compute dQ, and subsequently T and p
     
     % Intake
-    if dCa <= Ca_int_end   
+    if (Ca_int_start <= dCa)&& (dCa <= Ca_int_end)   
         T(dCa) = T1;
         p(dCa) = p_int;
         
@@ -363,36 +363,30 @@ for dCa=1:length(Ca)
     
     % Exhaust valves open
     if (dCa == Ca_ex_start)   
-        p(dCa) = Pamb;
+        p(dCa) = P_amb;
         T(dCa) = (P_amb.*T(dCa-1))./p(dCa-1);
     end
     
     % Between closing exhaust valves and opening intake valves
-    if (Ca_ex_start < dCa) && (dCa < Ca_int_start)
+    if (Ca_ex_start <= dCa) && (dCa < Ca_ex_end)
         p(dCa) = P_amb;
         T(dCa) = T(dCa-1);
     end
     
     % Intake valves open
-    if (dCa == Ca_int_start)
+    if (dCa == Ca_ex_end)                        
         p(dCa) = p_int;
         T(dCa)=(p_int.*T(dCa-1))./p(dCa-1);
     end
     
-    % General loop boundary condition
-    if (Ca_int_start  < dCa) && (dCa <= 721)
-        p(dCa) = p(dCa);
-        T(dCa) = T(dCa);
-    end
 end
 
 figure()
 plot(V,p*10^-5)
 xlabel('Volume [m^3]')
 ylabel('Pressure [Bar]')
-
 %%
-angle = 0:1:720;
+angle = 0:1:719;
 figure()
 plot(angle,p*10^-5)
 xlabel('Crank angle [\theta]')
