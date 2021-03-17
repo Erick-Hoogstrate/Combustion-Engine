@@ -252,7 +252,7 @@ dCa_comb        = Ca_comb_end - Ca_comb_start;
 
 % 4. Exhaust
 Ca_ex_start     = 540;
-Ca_ex_stop      = 720;
+Ca_ex_end       = 720;
 
 %% Combustion heat release (Wiebe)
 
