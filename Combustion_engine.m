@@ -40,7 +40,7 @@ sair_a= Yair*sia';                                                          % sa
 % ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)(O2 + 3.76N2) -->
 % (x_gas+x_eth)CO2 + ((y_gas+y_eth)/2)H2O + ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)N2
 
-percentage = 5;
+percentage = 15;
 load = "full"; %no,half,full load
 
 % mol_gas = (100-percentage)*volume*density * molaire massa
@@ -115,7 +115,7 @@ T2 =(p2*v2*T1/(p1*v1));
 %input
 hv_gas = 45*10^6; %J/kg. Between 44-46. This is de heating value for gasoline (value from the internet)
 hv_eth = 29.7*10^6; %J/kg. This is de heating value for ethanol
-T3 = 0.5*(AF_stoi*10^-3)*(((hv_gas*((M_gas*10^-3)))+(hv_eth*(M_eth*10^-3)))/((cv_function(percentage,T2))*((M_gas*10^-3)+(M_eth*10^-3))))%Calculated with heating value [J/kg], the stoichiometric air to fuel ratio (AF_stoi), the specific heat capacity of fuel and air [J/kg K], the air and fuel inlet temperatures [K]
+T3 = 0.5*(AF_stoi*10^-3)*(((hv_gas*((M_gas*10^-3)))+(hv_eth*(M_eth*10^-3)))/((cv_function(percentage,T2))*((M_gas*10^-3)+(M_eth*10^-3))));%Calculated with heating value [J/kg], the stoichiometric air to fuel ratio (AF_stoi), the specific heat capacity of fuel and air [J/kg K], the air and fuel inlet temperatures [K]
 %T3=998; %between 923-1073 Kelvin
 if load == "no"
     p3 = (p2*T3/T2)*0.1;
@@ -156,51 +156,7 @@ title({['PV Diagram'],(sprintf('Otto cycle E%.0f %s load', [percentage, load]))}
 legend([P0 P1 P2 P3 P4 P5],{'isobaric expansion','isentropic compression','isochoric heat addition','isentropic expansion','isochoric heat rejection', 'isobaric compression'})
 
 %thermal efficiency
-thermalefficiency=(1-1/r^(gamma-1))    
-
-%%
-%Work
-area12 = trapz(-v_compression,p_compression);                                 %start for calculation work
-area34 = trapz(v_expansion,p_expansion);
-
-work = area34-area12 %pa*m^3 is equal to J. Work per cycle
-
-measured_voltage = 203;
-%Determines the amperes. No load is 0, half load is 4 and full load is 7.3 (See Arjan&Sven SSA)
-if load == "no"
-    P_out = measured_voltage * 0;
-elseif load == "half"
-    P_out = measured_voltage * 4;
-elseif load == "full"
-    P_out = measured_voltage * 7.3;
-end
-V_dis = pi/4 * bore^2 * stroke * 4;
-p_me = (p1+p2+p3+p4)/4;
-W = p_me * V_dis;
-P_in = W * (50/2);
-mechanical_efficiency = P_out / P_in;
-
-
-% cv = cv_function(percentage,T)%cv based on percentage ethanol and temperature
-% T4=(p4/p1)*T1%Calculated with ideal gas law
-% Qc = cv*(MAir+MFuel)*(T4-T1)
-% 
-% %efficiency
-% efficiency = work/(work+Qc)
-% return
-%%
-%Power
-dt_no = 0.0378;%Time per cycle, no load
-dt_half = 0.0389344545;%Time per cycle, half load
-dt_full = 0.040065;%Time per cycle, full load
-
-if load == "no"
-    power = work/dt_no%J/s is equal to W. Power per cycle
-elseif load == "half"
-    power = work/dt_half%J/s is equal to W. Power per cycle
-elseif load == "full"
-    power = work/dt_full%J/s is equal to W. Power per cycle
-end
+thermalefficiency=(1-1/r^(gamma-1));    
 
 %% REAL CYCLE
 %% Intake pressure
@@ -388,6 +344,7 @@ figure()
 plot(V,p*10^-5)
 xlabel('Volume [m^3]')
 ylabel('Pressure [Bar]')
+grid on
 %%
 angle = 0:1:719;
 figure()
@@ -395,4 +352,56 @@ plot(angle,p*10^-5)
 xlabel('Crank angle [\theta]')
 ylabel('Pressure [Bar]')
 xlim([0 720])
-title('Pressure vs crank angle (E0 full load)')
+title('Pressure vs crank angle (E full load)')
+
+
+%%
+%Work
+p_V_array = [V(:,1) p(:,1)];
+p_V_array(p_V_array(:, 2) > Pamb, :) = [];
+
+total_work = polyarea(V,p);
+total_work = total_work(1);
+negative_work = polyarea(p_V_array(:,1),p_V_array(:,2));
+
+work = total_work - 2*negative_work; %[J]
+
+
+measured_voltage = 203;
+%Determines the amperes. No load is 0, half load is 4 and full load is 7.3 (See Arjan&Sven SSA)
+if load == "no"
+    P_out = measured_voltage * 0;
+elseif load == "half"
+    P_out = measured_voltage * 4;
+elseif load == "full"
+    P_out = measured_voltage * 7.3;
+end
+V_dis = pi/4 * bore^2 * stroke * 4;
+p_me = (p1+p2+p3+p4)/4;
+W = p_me * V_dis;
+P_in = W * (50/2);
+mechanical_efficiency = P_out / P_in;
+
+
+% cv = cv_function(percentage,T)%cv based on percentage ethanol and temperature
+% T4=(p4/p1)*T1%Calculated with ideal gas law
+% Qc = cv*(MAir+MFuel)*(T4-T1)
+% 
+% %efficiency
+% efficiency = work/(work+Qc)
+% return
+%%
+%Power
+dt_no = 0.0378;%Time per cycle, no load
+dt_half = 0.0389344545;%Time per cycle, half load
+dt_full = 0.040065;%Time per cycle, full load
+
+if load == "no"
+    power = work/dt_no;%J/s is equal to W. Power per cycle
+elseif load == "half"
+    power = work/dt_half;%J/s is equal to W. Power per cycle
+elseif load == "full"
+    power = work/dt_full;%J/s is equal to W. Power per cycle
+end
+
+disp((sprintf('%.2f kW', [power/1000])))  % kW
