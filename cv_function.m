@@ -35,7 +35,7 @@ cv = [CvNasa(T,Sp(iSp(1))), CvNasa(T,Sp(iSp(2))), CvNasa(T,Sp(iSp(3))), CvNasa(T
 % (x_gas+x_eth)CO2 + ((y_gas+y_eth)/2)H2O + ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)N2
 
 % mol_gas = (100-percentage)*volume*density * molaire massa
-mol_gas = (100-percentage)*1*0.75*/(Sp(iSp(1)).Mass*1000);                        % Density gasoline is from 0.71 to 0.77 g/cm3
+mol_gas = (100-percentage)*1*0.75/(Sp(iSp(1)).Mass*1000);                        % Density gasoline is from 0.71 to 0.77 g/cm3
 
 % mol_ethanol = percentage*volume*density * molaire massa
 mol_ethanol = percentage*1*0.78945/(46);                                     % Density Ethanol    0.78945 g/cm3 (at 20 ?C)
