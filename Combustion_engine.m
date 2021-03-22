@@ -225,8 +225,8 @@ den_g = 0.74;       % [kg/L] (only used in ratio, so unit not very important)
 den_e = 0.78945;    % [kg/L]
 den_mix = (den_g*(100-percentage) + den_e*percentage)./100;
 
-mass_perc_E = percentage.*(den_g./den_mix);
-Q_LHV = ((100 - percentage)./100).*43.4e3 + (percentage./100).*26.95e3;             % [kJ/kg]
+mass_perc_E = percentage.*(den_e./den_mix);
+Q_LHV = ((100 - mass_perc_E)./100).*43.4e3 + (mass_perc_E./100).*26.95e3;             % [kJ/kg]
 
 theta_d = dCa_comb;         % ca difference start and end combustion 400-340
 theta_s = Ca_comb_start;    % ca at start of combustion
