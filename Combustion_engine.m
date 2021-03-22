@@ -41,7 +41,7 @@ sair_a= Yair*sia';                                                          % sa
 % (x_gas+x_eth)CO2 + ((y_gas+y_eth)/2)H2O + ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)N2
 
 percentage = 15;
-load = "full"; %no,half,full load
+load = "half"; %no,half,full load
 
 % mol_gas = (100-percentage)*volume*density * molaire massa
 mol_gas = (100-percentage)*1*0.75/(SpS(1).Mass*1000);                     % Density gasoline is from 0.71 to 0.77 g/cm3
@@ -136,24 +136,24 @@ p_expansion = c2./(v_expansion.^gamma);
 
 
 %plot figure
-figure(1)
-hold on
-plot(v0,p0,'*','color','r')
-plot(v1,p1,'*','color','r')
-plot(v2,p2,'*','color','r')
-plot(v3,p3,'*','color','r')
-plot(v4,p4,'*','color','r')
-set(gca,'FontSize',30)
-P0=plot([v0 v1],[p0 p1],'-','color','blue','LineWidth',8);%isobaric expansion
-P1=plot(v_compression,p_compression,'color','m','LineWidth',8);%isentropic compression
-P2=plot([v2 v3],[p2 p3],'color','b','LineWidth',8);%isochoric heat addition
-P3=plot(v_expansion,p_expansion,'color','k','LineWidth',8);%isentropic expansion
-P4=plot([v4 v1],[p4,p1],'color','g','LineWidth',8);%isochoric heat rejection
-P5=plot([v1 v0],[p1 p0],'--','color','yellow','LineWidth',8);%isobaric compresion
-xlabel('Volume [m^3]')
-ylabel('Pressure [Pa]')
-title({['PV Diagram'],(sprintf('Otto cycle E%.0f %s load', [percentage, load]))}, 'FontSize', 50)
-legend([P0 P1 P2 P3 P4 P5],{'isobaric expansion','isentropic compression','isochoric heat addition','isentropic expansion','isochoric heat rejection', 'isobaric compression'})
+% figure(1)
+% hold on
+% plot(v0,p0,'*','color','r')
+% plot(v1,p1,'*','color','r')
+% plot(v2,p2,'*','color','r')
+% plot(v3,p3,'*','color','r')
+% plot(v4,p4,'*','color','r')
+% set(gca,'FontSize',30)
+% P0=plot([v0 v1],[p0 p1],'-','color','blue','LineWidth',8);%isobaric expansion
+% P1=plot(v_compression,p_compression,'color','m','LineWidth',8);%isentropic compression
+% P2=plot([v2 v3],[p2 p3],'color','b','LineWidth',8);%isochoric heat addition
+% P3=plot(v_expansion,p_expansion,'color','k','LineWidth',8);%isentropic expansion
+% P4=plot([v4 v1],[p4,p1],'color','g','LineWidth',8);%isochoric heat rejection
+% P5=plot([v1 v0],[p1 p0],'--','color','yellow','LineWidth',8);%isobaric compresion
+% xlabel('Volume [m^3]')
+% ylabel('Pressure [Pa]')
+% title({['PV Diagram'],(sprintf('Otto cycle E%.0f %s load', [percentage, load]))}, 'FontSize', 50)
+% legend([P0 P1 P2 P3 P4 P5],{'isobaric expansion','isentropic compression','isochoric heat addition','isentropic expansion','isochoric heat rejection', 'isobaric compression'})
 
 %thermal efficiency
 thermalefficiency=(1-1/r^(gamma-1));    
@@ -183,10 +183,15 @@ elseif load == "full"
     load_column = 3;
 end
 
-p_int = intake_pressure(E_row,load_column);     % intake pressure
-P_amb=1.01235e5;                                % Reference pressure, 1 atm!
+if ismember(percentage,[0, 5, 10, 15])
+    p_int = intake_pressure(E_row,load_column);     % intake pressure
+    mf = fuel_mass_exp(E_row,load_column);          % fuel mass per cycle
+else
+    Ep = percentage;
+    p_int = intake_pressure(mod(Ep,5),load_column)+ (intake_pressure((5-mod(Ep,5)),load_column)-intake_pressure(mod(Ep,5),load_column))*(Ep-(Ep-mod(Ep,5)))/((Ep+(5-mod(Ep,5)))-(Ep-mod(Ep,5)));     % intake pressure
+    mf = fuel_mass_exp(mod(Ep,5),load_column)+ (fuel_mass_exp((5-mod(Ep,5)),load_column)-fuel_mass_exp(mod(Ep,5),load_column))*(Ep-(Ep-mod(Ep,5)))/((Ep+(5-mod(Ep,5)))-(Ep-mod(Ep,5)));          % fuel mass per cycle
+end
 
-mf = fuel_mass_exp(E_row,load_column);          % fuel mass per cycle
 
 mmix = (1 + AF_stoi)*mf;                        % mix (fuel + air) mass per cycle
 %% Start and end CA per step
@@ -270,7 +275,7 @@ for dCa=1:length(Ca)
     
     % Compression
  if (Ca_comp_start < dCa)&&(dCa < Ca_comp_end)                 
-        [Cv_before, Cp_before, Rg_before] = before_comb(percentage, T(dCa-1));
+        [Cv_before, Cp_before, Rg_before] = before_comb(percentage/100, T(dCa-1));
         cv = Cv_before;
         R_g = Rg_before;
         gamma = Cp_before/Cv_before;
@@ -286,7 +291,7 @@ for dCa=1:length(Ca)
 
     % Combustion
     if (Ca_comb_start <= dCa) && (dCa < Ca_comb_end)                
-       [Cv_during, Cp_during, Rg_during] = during_comb(percentage, T(dCa-1), xb(dCa-Ca_comb_start+1));
+       [Cv_during, Cp_during, Rg_during] = during_comb(percentage/100, T(dCa-1), xb(dCa-Ca_comb_start+1));
 
         cv = Cv_during;
         R_g = Rg_during;
@@ -305,7 +310,7 @@ for dCa=1:length(Ca)
      
     % Between end combustion and opening valves
     if (Ca_comb_end <= dCa) && (dCa < Ca_ex_start)       
-       [Cv_after, Cp_after, Rg_after] = after_comb(percentage, T(dCa-1));
+       [Cv_after, Cp_after, Rg_after] = after_comb(percentage/100, T(dCa-1));
 
         cv = Cv_after;
         R_g = Rg_after;
@@ -322,13 +327,13 @@ for dCa=1:length(Ca)
     
     % Exhaust valves open
     if (dCa == Ca_ex_start)   
-        p(dCa) = P_amb;
-        T(dCa) = (P_amb.*T(dCa-1))./p(dCa-1);
+        p(dCa) = Pamb;
+        T(dCa) = (Pamb.*T(dCa-1))./p(dCa-1);
     end
     
     % Between closing exhaust valves and opening intake valves
     if (Ca_ex_start <= dCa) && (dCa < Ca_ex_end)
-        p(dCa) = P_amb;
+        p(dCa) = Pamb;
         T(dCa) = T(dCa-1);
     end
     
@@ -344,6 +349,7 @@ figure()
 plot(V,p*10^-5)
 xlabel('Volume [m^3]')
 ylabel('Pressure [Bar]')
+title({sprintf('PV Diagram, E%.0f %s load', [percentage, load])}, 'FontSize', 15)
 grid on
 %%
 angle = 0:1:719;
@@ -352,8 +358,8 @@ plot(angle,p*10^-5)
 xlabel('Crank angle [\theta]')
 ylabel('Pressure [Bar]')
 xlim([0 720])
-title('Pressure vs crank angle (E full load)')
-
+title({sprintf('Pressure vs crank angle, E%.0f %s load', [percentage, load])}, 'FontSize', 15)
+grid on
 
 %%
 %Work
@@ -397,11 +403,11 @@ dt_half = 0.0389344545;%Time per cycle, half load
 dt_full = 0.040065;%Time per cycle, full load
 
 if load == "no"
-    power = work/dt_no;%J/s is equal to W. Power per cycle
+    power = work/dt_no; %J/s is equal to W. Power per cycle
 elseif load == "half"
-    power = work/dt_half;%J/s is equal to W. Power per cycle
+    power = work/dt_half; %J/s is equal to W. Power per cycle
 elseif load == "full"
-    power = work/dt_full;%J/s is equal to W. Power per cycle
+    power = work/dt_full; %J/s is equal to W. Power per cycle
 end
 
 disp((sprintf('%.2f kW', [power/1000])))  % kW
