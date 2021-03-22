@@ -161,7 +161,7 @@ thermalefficiency=(1-1/r^(gamma-1));
 %% REAL CYCLE
 %% Intake pressure
 
-intake_pressure = [0.21 0.34 0.44; 0.28 0.39 0.46; 0.31 0.41 0.50; -0.12 0.35 0.55].*10^5; % rows represent fuels (E0 upper row), columns represent loads (NL first column)
+intake_pressure = [0.21 0.34 0.44; 0.28 0.39 0.46; 0.31 0.41 0.50; 0.23 0.35 0.56].*10^5; % rows represent fuels (E0 upper row), columns represent loads (NL first column)
                                                                                            % values derived from average pressure plots experimental data
 fuel_mass_exp   = [4.071 5.3597 7.9903; 3.3331 4.9078 6.7648; 3.8139 4.8079 6.0022; 3.1186 4.2123 5.8703].*10^-6;   % idem 
                                                                                      
