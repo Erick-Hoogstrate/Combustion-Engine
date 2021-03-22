@@ -16,13 +16,13 @@ for i =0:9;
     opts.ExtraColumnsRule = "ignore";
     opts.EmptyLineRule    = "read";
 
-    Test = readtable("C:\Users\20192420\Documents\Q3 Y2\data exp 2\TestE15_no_load_1.txt", opts); 
+    Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE15_no_load_1.txt", opts); 
 
     t          = Test.E0;
     puls_sens  = Test.E1;
     pres_sens  = Test.E2;
     
-    x = 1.8; %correcting pressure sensor
+    x = 1.8+0.35; %correcting pressure sensor
     
     while i == 0
         pressure_relative = (pres_sens -(0.115*5))/(0.00385*5*4);  
@@ -143,7 +143,7 @@ for i =0:9;
     opts.ExtraColumnsRule = "ignore";
     opts.EmptyLineRule    = "read";
 
-    Test = readtable("C:\Users\20192420\Documents\Q3 Y2\data exp 2\TestE15_half_load_3.txt", opts); 
+    Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE15_half_load_3.txt", opts); 
 
     t          = Test.E0;
     puls_sens  = Test.E1;
@@ -270,7 +270,7 @@ for i =0:9;
     opts.ExtraColumnsRule = "ignore";
     opts.EmptyLineRule    = "read";
 
-    Test = readtable("C:\Users\20192420\Documents\Q3 Y2\data exp 2\TestE15_full_load_3.txt", opts); 
+    Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE15_full_load_3.txt", opts); 
 
     t          = Test.E0;
     puls_sens  = Test.E1;
