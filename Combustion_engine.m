@@ -345,22 +345,6 @@ for dCa=1:length(Ca)
     
 end
 
-figure()
-plot(V,p*10^-5)
-xlabel('Volume [m^3]')
-ylabel('Pressure [Bar]')
-title({sprintf('PV Diagram, E%.0f %s load', [percentage, load])}, 'FontSize', 15)
-grid on
-%%
-angle = 0:1:719;
-figure()
-plot(angle,p*10^-5)
-xlabel('Crank angle [\theta]')
-ylabel('Pressure [Bar]')
-xlim([0 720])
-title({sprintf('Pressure vs crank angle, E%.0f %s load', [percentage, load])}, 'FontSize', 15)
-grid on
-
 %%
 %Work
 p_V_array = [V(:,1) p(:,1)];
@@ -411,3 +395,26 @@ elseif load == "full"
 end
 
 disp((sprintf('%.2f kW', [power/1000])))  % kW
+
+
+%% Comparison graphs
+
+%pv-diagrams
+figure()
+plot(V,p*10^-5)
+xlabel('Volume [m^3]')
+ylabel('Pressure [Bar]')
+title({sprintf('PV Diagram, E%.0f %s load', [percentage, load])}, 'FontSize', 15)
+grid on
+
+give_pv_diagram(percentage,load)
+
+%p vs CA diagram
+% angle = 0:1:719;
+% figure()
+% plot(angle,p*10^-5)
+% xlabel('Crank angle [\theta]')
+% ylabel('Pressure [Bar]')
+% xlim([0 720])
+% title({sprintf('Pressure vs crank angle, E%.0f %s load', [percentage, load])}, 'FontSize', 15)
+% grid on
