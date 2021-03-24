@@ -40,7 +40,7 @@ sair_a= Yair*sia';                                                          % sa
 % ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)(O2 + 3.76N2) -->
 % (x_gas+x_eth)CO2 + ((y_gas+y_eth)/2)H2O + ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)N2
 
-percentage = 0;
+percentage = 5;
 load = "no"; %no,half,full load
 
 % mol_gas = (100-percentage)*volume*density * molaire massa
@@ -202,11 +202,27 @@ Ca_int_end      = 180;
 
 % 2. Compression
 Ca_comp_start   = Ca_int_end;
-Ca_comp_end     = 340;%340
+Ca_comp_end     = 340;%340, also adjust in line 30 of dQwall_loss.m
+
+%E0 NL 340 - 450, power = 0.53 kW
+%E0 HL 340 - 425, power = 1.20 kW
+%E0 FL 340 - 415, power = 2.15 kW
+
+%E5 NL 340 - 435, power = 0.52 kW
+%E5 HL 340 - 415, power = 1.17 kW
+%E5 FL 340 - 400, power = 1.80 kW
+
+%E10 NL 340 - 425
+%E10 HL 340 - 410
+%E10 FL 340 - 387
+
+%E15 NL 340 - 425
+%E15 HL 340 - 400
+%E15 FL 340 - 385
 
 % 3. Combustion
 Ca_comb_start   = Ca_comp_end;      
-Ca_comb_end     = 400;%400           
+Ca_comb_end     = 400;%400, also adjust in line 32 of dQwall_loss.m           
 dCa_comb        = Ca_comb_end - Ca_comb_start;
 
 % Note that the combustion ends before the exhaust valves open
