@@ -1,6 +1,5 @@
 function [] = test(percentage, load)
 
-
 if percentage == 0
     if load == 'no'
         %% -------------------------NO LOAD E0---------------------------------
@@ -19,7 +18,7 @@ if percentage == 0
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE0_no_load_3.txt", opts); 
+            Test = readtable("raw_data_exp2\TestE0_no_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -97,24 +96,6 @@ if percentage == 0
         phi_speed    = rotation_speed*360*t; 
         phi          = phi_speed-(start_angle+double_tooth);
 
-%         figure()
-%         hold on 
-%         plot(t, p_c1)
-%         plot(t, p_c2)
-%         plot(t, p_c3)
-%         plot(t, p_c4) 
-%         plot(t, p_c5) 
-%         plot(t, p_c6)
-%         plot(t, p_c7)
-%         plot(t, p_c8)
-%         plot(t, p_c9)
-%         plot(t, p_c10)
-%         plot(t, average_pressure)
-%         xlabel('Time [s]')
-%         ylabel('Pressure [Bar]')
-%         legend('c1','c2','c3','c4','c5','c6','c7','c8','c9','c10', 'average')
-%         title('Pressure over Time E0 NL (10 cycles)')
-
         a   = 0.027;      %radius (equal to stroke/2)
         B   = 0.068;      %diameter of piston
         L   = 0.085;      %length of rod
@@ -125,9 +106,7 @@ if percentage == 0
 
         hold on
         plot(Volume, average_pressure,'LineWidth',6)
-%         xlabel('Volume [m^3]')
-%         ylabel('Pressure [Bar]')
-%         title('E0 NL Average PV-diagram')
+        
     elseif load == 'half'
         %% -------------------------HALF LOAD E0---------------------------------
         for i =0:9;
@@ -145,7 +124,7 @@ if percentage == 0
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE0_half_load_3.txt", opts); 
+            Test = readtable("raw_data_exp2\TestE0_half_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -223,24 +202,6 @@ if percentage == 0
         phi_speed    = rotation_speed*360*t; 
         phi          = phi_speed-(start_angle+double_tooth);
 
-%         figure()
-%         hold on 
-%         plot(t, p_c1)
-%         plot(t, p_c2)
-%         plot(t, p_c3)
-%         plot(t, p_c4)
-%         plot(t, p_c5)
-%         plot(t, p_c6)
-%         plot(t, p_c7)
-%         plot(t, p_c8)
-%         plot(t, p_c9)
-%         plot(t, p_c10)
-%         plot(t, average_pressure)
-%         xlabel('Time [s]')
-%         ylabel('Pressure [Bar]')
-%         legend('c1','c2','c3','c4','c5','c6','c7','c8','c9','c10', 'average')
-%         title('Pressure over Time E0 HL (10 cycles)')
-
         a   = 0.027;      %radius (equal to stroke/2)
         B   = 0.068;      %diameter of piston
         L   = 0.085;      %length of rod
@@ -251,9 +212,7 @@ if percentage == 0
 
         hold on
         plot(Volume, average_pressure,'LineWidth',6)
-%         xlabel('Volume [m^3]')
-%         ylabel('Pressure [Bar]')
-%         title('E0 HL Average PV-diagram')
+        
     elseif load == 'full'
         %% -------------------------FULL LOAD E0---------------------------------
         for i =0:9;
@@ -271,7 +230,7 @@ if percentage == 0
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE0_full_load_3.txt", opts); 
+            Test = readtable("raw_data_exp2\TestE0_full_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -348,25 +307,7 @@ if percentage == 0
         double_tooth = 83.13;
         phi_speed    = rotation_speed*360*t; 
         phi          = phi_speed-(start_angle+double_tooth);
-
-%         figure()
-%         hold on 
-%         plot(t, p_c1)
-%         plot(t, p_c2)
-%         plot(t, p_c3)
-%         plot(t, p_c4)
-%         plot(t, p_c5)
-%         plot(t, p_c6)
-%         plot(t, p_c7)
-%         plot(t, p_c8)
-%         plot(t, p_c9)
-%         plot(t, p_c10)
-%         plot(t, average_pressure)
-%         xlabel('Time [s]')
-%         ylabel('Pressure [Bar]')
-%         legend('c1','c2','c3','c4','c5','c6','c7','c8','c9','c10', 'average')
-%         title('Pressure over Time E0 FL (10 cycles)')
-
+        
         a   = 0.027;      %radius (equal to stroke/2)
         B   = 0.068;      %diameter of piston
         L   = 0.085;      %length of rod
@@ -377,9 +318,7 @@ if percentage == 0
 
         hold on
         plot(Volume, average_pressure,'LineWidth',6)
-%         xlabel('Volume [m^3]')
-%         ylabel('Pressure [Bar]')
-%         title('E0 FL Average PV-diagram')
+        
     end 
 elseif percentage == 5
     if load == 'no'
@@ -399,7 +338,7 @@ elseif percentage == 5
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE5_no_load_2.txt", opts); 
+            Test = readtable("raw_data_exp2\TestE5_no_load_2.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -477,24 +416,6 @@ elseif percentage == 5
         phi_speed    = rotation_speed*360*t; 
         phi          = phi_speed-(start_angle+double_tooth);
 
-%         figure()
-%         hold on 
-%         plot(t, p_c1)
-%         plot(t, p_c2)
-%         plot(t, p_c3)
-%         plot(t, p_c4)
-%         plot(t, p_c5)
-%         plot(t, p_c6)
-%         plot(t, p_c7)
-%         plot(t, p_c8)
-%         plot(t, p_c9)
-%         plot(t, p_c10)
-%         plot(t, average_pressure)
-%         xlabel('Time [s]')
-%         ylabel('Pressure [Bar]')
-%         legend('c1','c2','c3','c4','c5','c6','c7','c8','c9','c10', 'average')
-%         title('Pressure over Time E5 NL (10 cycles)')
-
         a   = 0.027;      %radius (equal to stroke/2)
         B   = 0.068;      %diameter of piston
         L   = 0.085;      %length of rod
@@ -505,9 +426,7 @@ elseif percentage == 5
 
         hold on
         plot(Volume, average_pressure,'LineWidth',6)
-%         xlabel('Volume [m^3]')
-%         ylabel('Pressure [Bar]')
-%         title('E5 NL Average PV-diagram')
+
     elseif load == 'half'
         %% -------------------------HALF LOAD E5---------------------------------
         for i =0:9;
@@ -525,7 +444,7 @@ elseif percentage == 5
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE5_half_load_3.txt", opts); 
+            Test = readtable("raw_data_exp2\TestE5_half_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -603,24 +522,6 @@ elseif percentage == 5
         phi_speed    = rotation_speed*360*t; 
         phi          = phi_speed-(start_angle+double_tooth);
 
-%         figure()
-%         hold on 
-%         plot(t, p_c1) 
-%         plot(t, p_c2)
-%         plot(t, p_c3) 
-%         plot(t, p_c4)
-%         plot(t, p_c5)
-%         plot(t, p_c6)
-%         plot(t, p_c7)
-%         plot(t, p_c8)
-%         plot(t, p_c9)
-%         plot(t, p_c10)
-%         plot(t, average_pressure)
-%         xlabel('Time [s]')
-%         ylabel('Pressure [Bar]')
-%         legend('c1','c2','c3','c4','c5','c6','c7','c8','c9','c10', 'average')
-%         title('Pressure over Time E5 HL (10 cycles)')
-
         a   = 0.027;      %radius (equal to stroke/2)
         B   = 0.068;      %diameter of piston
         L   = 0.085;      %length of rod
@@ -631,9 +532,7 @@ elseif percentage == 5
 
         hold on
         plot(Volume, average_pressure,'LineWidth',6)
-%         xlabel('Volume [m^3]')
-%         ylabel('Pressure [Bar]')
-%         title('E5 HL Average PV-diagram')
+
     elseif load == 'full'
         %% -------------------------FULL LOAD E5---------------------------------
         for i =0:9;
@@ -651,7 +550,7 @@ elseif percentage == 5
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE5_full_load_3.txt", opts); 
+            Test = readtable("raw_data_exp2\TestE5_full_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -729,24 +628,6 @@ elseif percentage == 5
         phi_speed    = rotation_speed*360*t; 
         phi          = phi_speed-(start_angle+double_tooth);
 
-%         figure()
-%         hold on 
-%         plot(t, p_c1)
-%         plot(t, p_c2)
-%         plot(t, p_c3) 
-%         plot(t, p_c4)
-%         plot(t, p_c5)
-%         plot(t, p_c6)
-%         plot(t, p_c7)
-%         plot(t, p_c8)
-%         plot(t, p_c9)
-%         plot(t, p_c10)
-%         plot(t, average_pressure)
-%         xlabel('Time [s]')
-%         ylabel('Pressure [Bar]')
-%         legend('c1','c2','c3','c4','c5','c6','c7','c8','c9','c10', 'average')
-%         title('Pressure over Time E5 FL (10 cycles)')
-
         a   = 0.027;      %radius (equal to stroke/2)
         B   = 0.068;      %diameter of piston
         L   = 0.085;      %length of rod
@@ -757,9 +638,7 @@ elseif percentage == 5
 
         hold on
         plot(Volume, average_pressure,'LineWidth',6)
-%         xlabel('Volume [m^3]')
-%         ylabel('Pressure [Bar]')
-%         title('E5 FL Average PV-diagram')
+
     end
 elseif percentage == 10
     if load == 'no'
@@ -779,7 +658,7 @@ elseif percentage == 10
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE10_no_load_3.txt", opts); 
+            Test = readtable("raw_data_exp2\TestE10_no_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -857,24 +736,6 @@ elseif percentage == 10
         phi_speed    = rotation_speed*360*t; 
         phi          = phi_speed-(start_angle+double_tooth);
 
-%         figure()
-%         hold on 
-%         plot(t, p_c1)
-%         plot(t, p_c2)
-%         plot(t, p_c3)
-%         plot(t, p_c4) 
-%         plot(t, p_c5) 
-%         plot(t, p_c6)
-%         plot(t, p_c7)
-%         plot(t, p_c8)
-%         plot(t, p_c9)
-%         plot(t, p_c10)
-%         plot(t, average_pressure)
-%         xlabel('Time [s]')
-%         ylabel('Pressure [Bar]')
-%         legend('c1','c2','c3','c4','c5','c6','c7','c8','c9','c10', 'average')
-%         title('Pressure over Time E10 NL (10 cycles)')
-
         a   = 0.027;      %radius (equal to stroke/2)
         B   = 0.068;      %diameter of piston
         L   = 0.085;      %length of rod
@@ -885,9 +746,7 @@ elseif percentage == 10
 
         hold on
         plot(Volume, average_pressure,'LineWidth',6)
-%         xlabel('Volume [m^3]')
-%         ylabel('Pressure [Bar]')
-%         title('E10 NL Average PV-diagram')
+
     elseif load == 'half'
         %% -------------------------HALF LOAD E10---------------------------------
         for i =0:9;
@@ -905,7 +764,7 @@ elseif percentage == 10
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE10_half_load_3.txt", opts); 
+            Test = readtable("raw_data_exp2\TestE10_half_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -983,24 +842,6 @@ elseif percentage == 10
         phi_speed    = rotation_speed*360*t; 
         phi          = phi_speed-(start_angle+double_tooth);
 
-%         figure()
-%         hold on 
-%         plot(t, p_c1)
-%         plot(t, p_c2)
-%         plot(t, p_c3)
-%         plot(t, p_c4)
-%         plot(t, p_c5)
-%         plot(t, p_c6)
-%         plot(t, p_c7)
-%         plot(t, p_c8)
-%         plot(t, p_c9)
-%         plot(t, p_c10)
-%         plot(t, average_pressure)
-%         xlabel('Time [s]')
-%         ylabel('Pressure [Bar]')
-%         legend('c1','c2','c3','c4','c5','c6','c7','c8','c9','c10', 'average')
-%         title('Pressure over Time E10 HL (10 cycles)')
-
         a   = 0.027;      %radius (equal to stroke/2)
         B   = 0.068;      %diameter of piston
         L   = 0.085;      %length of rod
@@ -1011,9 +852,7 @@ elseif percentage == 10
 
         hold on
         plot(Volume, average_pressure,'LineWidth',6)
-%         xlabel('Volume [m^3]')
-%         ylabel('Pressure [Bar]')
-%         title('E10 HL Average PV-diagram')
+
     elseif load == 'full'
         %% -------------------------FULL LOAD E10---------------------------------
         for i =0:9;
@@ -1031,7 +870,7 @@ elseif percentage == 10
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE10_full_load_3.txt", opts); 
+            Test = readtable("raw_data_exp2\TestE10_full_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -1109,24 +948,6 @@ elseif percentage == 10
         phi_speed    = rotation_speed*360*t; 
         phi          = phi_speed-(start_angle+double_tooth);
 
-%         figure()
-%         hold on 
-%         plot(t, p_c1)
-%         plot(t, p_c2)
-%         plot(t, p_c3)
-%         plot(t, p_c4)
-%         plot(t, p_c5) 
-%         plot(t, p_c6) 
-%         plot(t, p_c7)
-%         plot(t, p_c8)
-%         plot(t, p_c9)
-%         plot(t, p_c10)
-%         plot(t, average_pressure)
-%         xlabel('Time [s]')
-%         ylabel('Pressure [Bar]')
-%         legend('c1','c2','c3','c4','c5','c6','c7','c8','c9','c10', 'average')
-%         title('Pressure over Time E10 FL (10 cycles)')
-
         a   = 0.027;      %radius (equal to stroke/2)
         B   = 0.068;      %diameter of piston
         L   = 0.085;      %length of rod
@@ -1137,9 +958,7 @@ elseif percentage == 10
 
         hold on
         plot(Volume, average_pressure,'LineWidth',6)
-%         xlabel('Volume [m^3]')
-%         ylabel('Pressure [Bar]')
-%         title('E10 FL Average PV-diagram')
+
     end
 elseif percentage == 15
     if load == 'no'
@@ -1159,7 +978,7 @@ elseif percentage == 15
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE15_no_load_1.txt", opts); 
+            Test = readtable("raw_data_exp2\TestE15_no_load_1.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -1237,24 +1056,6 @@ elseif percentage == 15
         phi_speed    = rotation_speed*360*t; 
         phi          = phi_speed-(start_angle+double_tooth);
 
-%         figure()
-%         hold on 
-%         plot(t, p_c1)
-%         plot(t, p_c2) 
-%         plot(t, p_c3)
-%         plot(t, p_c4)
-%         plot(t, p_c5)
-%         plot(t, p_c6)
-%         plot(t, p_c7)
-%         plot(t, p_c8)
-%         plot(t, p_c9)
-%         plot(t, p_c10)
-%         plot(t, average_pressure)
-%         xlabel('Time [s]')
-%         ylabel('Pressure [Bar]')
-%         legend('c1','c2','c3','c4','c5','c6','c7','c8','c9','c10', 'average')
-%         title('Pressure over Time E15 NL (10 cycles)')
-
         a   = 0.027;      %radius (equal to stroke/2)
         B   = 0.068;      %diameter of piston
         L   = 0.085;      %length of rod
@@ -1265,9 +1066,7 @@ elseif percentage == 15
 
         hold on
         plot(Volume, average_pressure,'LineWidth',6)
-%         xlabel('Volume [m^3]')
-%         ylabel('Pressure [Bar]')
-%         title('E15 NL Average PV-diagram')
+
     elseif load == 'half'
         %% -------------------------HALF LOAD E15---------------------------------
         for i =0:9;
@@ -1285,7 +1084,7 @@ elseif percentage == 15
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE15_half_load_3.txt", opts); 
+            Test = readtable("raw_data_exp2\TestE15_half_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -1363,24 +1162,6 @@ elseif percentage == 15
         phi_speed    = rotation_speed*360*t; 
         phi          = phi_speed-(start_angle+double_tooth);
 
-%         figure()
-%         hold on 
-%         plot(t, p_c1) 
-%         plot(t, p_c2)
-%         plot(t, p_c3)
-%         plot(t, p_c4)
-%         plot(t, p_c5)
-%         plot(t, p_c6)
-%         plot(t, p_c7)
-%         plot(t, p_c8)
-%         plot(t, p_c9)
-%         plot(t, p_c10)
-%         plot(t, average_pressure)
-%         xlabel('Time [s]')
-%         ylabel('Pressure [Bar]')
-%         legend('c1','c2','c3','c4','c5','c6','c7','c8','c9','c10', 'average')
-%         title('Pressure over Time E15 HL (10 cycles)')
-
         a   = 0.027;      %radius (equal to stroke/2)
         B   = 0.068;      %diameter of piston
         L   = 0.085;      %length of rod
@@ -1391,9 +1172,7 @@ elseif percentage == 15
 
         hold on
         plot(Volume, average_pressure,'LineWidth',6)
-%         xlabel('Volume [m^3]')
-%         ylabel('Pressure [Bar]')
-%         title('E15 HL Average PV-diagram')
+
     elseif load == 'full'
         %% -------------------------FULL LOAD E15---------------------------------
         for i =0:9;
@@ -1411,7 +1190,7 @@ elseif percentage == 15
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE15_full_load_3.txt", opts); 
+            Test = readtable("raw_data_exp2\TestE15_full_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -1489,24 +1268,6 @@ elseif percentage == 15
         phi_speed    = rotation_speed*360*t; 
         phi          = phi_speed-(start_angle+double_tooth);
 
-%         figure()
-%         hold on 
-%         plot(t, p_c1)
-%         plot(t, p_c2) 
-%         plot(t, p_c3)
-%         plot(t, p_c4)
-%         plot(t, p_c5)
-%         plot(t, p_c6)
-%         plot(t, p_c7)
-%         plot(t, p_c8)
-%         plot(t, p_c9)
-%         plot(t, p_c10)
-%         plot(t, average_pressure)
-%         xlabel('Time [s]')
-%         ylabel('Pressure [Bar]')
-%         legend('c1','c2','c3','c4','c5','c6','c7','c8','c9','c10', 'average')
-%         title('Pressure over Time E15 FL (10 cycles)')
-
         a   = 0.027;      %radius (equal to stroke/2)
         B   = 0.068;      %diameter of piston
         L   = 0.085;      %length of rod
@@ -1517,15 +1278,13 @@ elseif percentage == 15
 
         hold on
         plot(Volume, average_pressure,'LineWidth',6)
-%         xlabel('Volume [m^3]')
-%         ylabel('Pressure [Bar]')
-%         title('E15 FL Average PV-diagram')
     end
+    
 else
     disp("Not included")
  
+    
 end %end if-elseif statement
-
 
 
 end %end function
