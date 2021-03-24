@@ -19,7 +19,7 @@ if percentage == 0
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("raw_data_exp2\TestE0_no_load_3.txt", opts); 
+            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE0_no_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -124,7 +124,7 @@ if percentage == 0
         Volume = (((pi)*B.^2)/(4))*(L + a - s) + V_c; 
 
         hold on
-        plot(Volume, average_pressure)
+        plot(Volume, average_pressure,'LineWidth',6)
 %         xlabel('Volume [m^3]')
 %         ylabel('Pressure [Bar]')
 %         title('E0 NL Average PV-diagram')
@@ -145,7 +145,7 @@ if percentage == 0
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("raw_data_exp2\TestE0_half_load_3.txt", opts); 
+            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE0_half_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -250,7 +250,7 @@ if percentage == 0
         Volume = (((pi)*B.^2)/(4))*(L + a - s) + V_c; 
 
         hold on
-        plot(Volume, average_pressure)
+        plot(Volume, average_pressure,'LineWidth',6)
 %         xlabel('Volume [m^3]')
 %         ylabel('Pressure [Bar]')
 %         title('E0 HL Average PV-diagram')
@@ -271,7 +271,7 @@ if percentage == 0
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("raw_data_exp2\TestE0_full_load_3.txt", opts); 
+            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE0_full_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -376,7 +376,7 @@ if percentage == 0
         Volume = (((pi)*B.^2)/(4))*(L + a - s) + V_c; 
 
         hold on
-        plot(Volume, average_pressure)
+        plot(Volume, average_pressure,'LineWidth',6)
 %         xlabel('Volume [m^3]')
 %         ylabel('Pressure [Bar]')
 %         title('E0 FL Average PV-diagram')
@@ -399,7 +399,7 @@ elseif percentage == 5
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("raw_data_exp2\TestE5_no_load_2.txt", opts); 
+            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE5_no_load_2.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -504,7 +504,7 @@ elseif percentage == 5
         Volume = (((pi)*B.^2)/(4))*(L + a - s) + V_c; 
 
         hold on
-        plot(Volume, average_pressure)
+        plot(Volume, average_pressure,'LineWidth',6)
 %         xlabel('Volume [m^3]')
 %         ylabel('Pressure [Bar]')
 %         title('E5 NL Average PV-diagram')
@@ -525,7 +525,7 @@ elseif percentage == 5
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("raw_data_exp2\TestE5_half_load_3.txt", opts); 
+            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE5_half_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -630,7 +630,7 @@ elseif percentage == 5
         Volume = (((pi)*B.^2)/(4))*(L + a - s) + V_c; 
 
         hold on
-        plot(Volume, average_pressure)
+        plot(Volume, average_pressure,'LineWidth',6)
 %         xlabel('Volume [m^3]')
 %         ylabel('Pressure [Bar]')
 %         title('E5 HL Average PV-diagram')
@@ -651,7 +651,7 @@ elseif percentage == 5
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("raw_data_exp2\TestE5_full_load_3.txt", opts); 
+            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE5_full_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -756,7 +756,7 @@ elseif percentage == 5
         Volume = (((pi)*B.^2)/(4))*(L + a - s) + V_c; 
 
         hold on
-        plot(Volume, average_pressure)
+        plot(Volume, average_pressure,'LineWidth',6)
 %         xlabel('Volume [m^3]')
 %         ylabel('Pressure [Bar]')
 %         title('E5 FL Average PV-diagram')
@@ -779,7 +779,7 @@ elseif percentage == 10
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("raw_data_exp2\TestE10_no_load_3.txt", opts); 
+            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE10_no_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -884,7 +884,7 @@ elseif percentage == 10
         Volume = (((pi)*B.^2)/(4))*(L + a - s) + V_c; 
 
         hold on
-        plot(Volume, average_pressure)
+        plot(Volume, average_pressure,'LineWidth',6)
 %         xlabel('Volume [m^3]')
 %         ylabel('Pressure [Bar]')
 %         title('E10 NL Average PV-diagram')
@@ -905,7 +905,7 @@ elseif percentage == 10
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("raw_data_exp2\TestE10_half_load_3.txt", opts); 
+            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE10_half_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -1010,7 +1010,7 @@ elseif percentage == 10
         Volume = (((pi)*B.^2)/(4))*(L + a - s) + V_c; 
 
         hold on
-        plot(Volume, average_pressure)
+        plot(Volume, average_pressure,'LineWidth',6)
 %         xlabel('Volume [m^3]')
 %         ylabel('Pressure [Bar]')
 %         title('E10 HL Average PV-diagram')
@@ -1031,7 +1031,7 @@ elseif percentage == 10
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("raw_data_exp2\TestE10_full_load_3.txt", opts); 
+            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE10_full_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -1136,7 +1136,7 @@ elseif percentage == 10
         Volume = (((pi)*B.^2)/(4))*(L + a - s) + V_c; 
 
         hold on
-        plot(Volume, average_pressure)
+        plot(Volume, average_pressure,'LineWidth',6)
 %         xlabel('Volume [m^3]')
 %         ylabel('Pressure [Bar]')
 %         title('E10 FL Average PV-diagram')
@@ -1159,13 +1159,13 @@ elseif percentage == 15
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("raw_data_exp2\TestE15_no_load_1.txt", opts); 
+            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE15_no_load_1.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
             pres_sens  = Test.E2;
 
-            x = 1.8; %correcting pressure sensor
+            x = 1.8+0.35; %correcting pressure sensor
 
             while i == 0
                 pressure_relative = (pres_sens -(0.115*5))/(0.00385*5*4);  
@@ -1264,7 +1264,7 @@ elseif percentage == 15
         Volume = (((pi)*B.^2)/(4))*(L + a - s) + V_c; 
 
         hold on
-        plot(Volume, average_pressure)
+        plot(Volume, average_pressure,'LineWidth',6)
 %         xlabel('Volume [m^3]')
 %         ylabel('Pressure [Bar]')
 %         title('E15 NL Average PV-diagram')
@@ -1285,7 +1285,7 @@ elseif percentage == 15
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("raw_data_exp2\TestE15_half_load_3.txt", opts); 
+            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE15_half_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -1390,7 +1390,7 @@ elseif percentage == 15
         Volume = (((pi)*B.^2)/(4))*(L + a - s) + V_c; 
 
         hold on
-        plot(Volume, average_pressure)
+        plot(Volume, average_pressure,'LineWidth',6)
 %         xlabel('Volume [m^3]')
 %         ylabel('Pressure [Bar]')
 %         title('E15 HL Average PV-diagram')
@@ -1411,7 +1411,7 @@ elseif percentage == 15
             opts.ExtraColumnsRule = "ignore";
             opts.EmptyLineRule    = "read";
 
-            Test = readtable("raw_data_exp2\TestE15_full_load_3.txt", opts); 
+            Test = readtable("D:\Documents\MATLAB\(4GB10) DBL Combustion engine\Experiment 2\raw_data_exp2\TestE15_full_load_3.txt", opts); 
 
             t          = Test.E0;
             puls_sens  = Test.E1;
@@ -1516,7 +1516,7 @@ elseif percentage == 15
         Volume = (((pi)*B.^2)/(4))*(L + a - s) + V_c; 
 
         hold on
-        plot(Volume, average_pressure)
+        plot(Volume, average_pressure,'LineWidth',6)
 %         xlabel('Volume [m^3]')
 %         ylabel('Pressure [Bar]')
 %         title('E15 FL Average PV-diagram')
@@ -1529,4 +1529,3 @@ end %end if-elseif statement
 
 
 end %end function
-

@@ -40,8 +40,8 @@ sair_a= Yair*sia';                                                          % sa
 % ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)(O2 + 3.76N2) -->
 % (x_gas+x_eth)CO2 + ((y_gas+y_eth)/2)H2O + ((x_gas+x_eth)+(y_gas+y_eth)/4-(z_gas+z_eth)/2)N2
 
-percentage = 15;
-load = "half"; %no,half,full load
+percentage = 0;
+load = "no"; %no,half,full load
 
 % mol_gas = (100-percentage)*volume*density * molaire massa
 mol_gas = (100-percentage)*1*0.75/(SpS(1).Mass*1000);                     % Density gasoline is from 0.71 to 0.77 g/cm3
@@ -202,11 +202,11 @@ Ca_int_end      = 180;
 
 % 2. Compression
 Ca_comp_start   = Ca_int_end;
-Ca_comp_end     = 340;
+Ca_comp_end     = 340;%340
 
 % 3. Combustion
 Ca_comb_start   = Ca_comp_end;      
-Ca_comb_end     = 400;           
+Ca_comb_end     = 400;%400           
 dCa_comb        = Ca_comb_end - Ca_comb_start;
 
 % Note that the combustion ends before the exhaust valves open
@@ -345,6 +345,28 @@ for dCa=1:length(Ca)
     
 end
 
+figure()
+plot(V,p*10^-5,'LineWidth',6)
+set(gca,'FontSize',30)
+xlabel('Volume [m^3]')
+ylabel('Pressure [Bar]')
+title({sprintf('PV Diagram, E%.0f %s load', [percentage, load])}, 'FontSize', 50)
+grid on
+give_pv_diagram(percentage, load);
+if ismember(percentage,[0, 5, 10, 15])
+    legend("Model","Experiment")
+end
+%%
+angle = 0:1:719;
+figure()
+plot(angle,p*10^-5,'LineWidth',6)
+set(gca,'FontSize',30)
+xlabel('Crank angle [\theta]')
+ylabel('Pressure [Bar]')
+xlim([0 720])
+title({sprintf('Pressure vs crank angle, E%.0f %s load', [percentage, load])}, 'FontSize', 50)
+grid on
+
 %%
 %Work
 p_V_array = [V(:,1) p(:,1)];
@@ -395,26 +417,3 @@ elseif load == "full"
 end
 
 disp((sprintf('%.2f kW', [power/1000])))  % kW
-
-
-%% Comparison graphs
-
-%pv-diagrams
-figure()
-plot(V,p*10^-5)
-xlabel('Volume [m^3]')
-ylabel('Pressure [Bar]')
-title({sprintf('PV Diagram, E%.0f %s load', [percentage, load])}, 'FontSize', 15)
-grid on
-
-give_pv_diagram(percentage,load)
-
-%p vs CA diagram
-% angle = 0:1:719;
-% figure()
-% plot(angle,p*10^-5)
-% xlabel('Crank angle [\theta]')
-% ylabel('Pressure [Bar]')
-% xlim([0 720])
-% title({sprintf('Pressure vs crank angle, E%.0f %s load', [percentage, load])}, 'FontSize', 15)
-% grid on
