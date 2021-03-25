@@ -1,19 +1,19 @@
 function [dQ_loss] = dQwall_loss(Ca1,Ca2,T,p,p_int,gamma)
 
 % Constants
-Tamb = 298.15;      % Temperature enviroment
-Tw   = 363;         % Wall temperature, assumed 90 degrees
-stroke = 0.054;     %[m]
-rod  = 0.091313;    %[m]
-bore = 0.068;       %[m]
+Tamb = 298.15;              % Temperature enviroment
+Tw   = 363;                 % Wall temperature, assumed 90 degrees
+stroke = 0.054;             % [m]
+rod  = 0.091313;            % [m]
+bore = 0.068;               % [m]
 
-r_crank = stroke/2;       % Radius of the crankshaft[m] (half the stroke)
-r_cyl   = bore/2;         % Radius cyllinder [m]
+r_crank = stroke/2;         % Radius of the crankshaft[m] (half the stroke)
+r_cyl   = bore/2;           % Radius cyllinder [m]
 
 RPM = 3000;
-MPS = 2*stroke*RPM/60;    % Mean piston speed [m/s]
-gamma = 1.4;              % Gamma
-r = 8.5;                  % Compression ratio
+MPS = 2*stroke*RPM/60;      % Mean piston speed [m/s]
+gamma = 1.4;                % Gamma
+r = 8.5;                    % Compression ratio
 
 
 % Volume
@@ -46,9 +46,9 @@ elseif (Ca2<=Ca_int_end) || (Ca2>=Ca_comb_end)
     C2=0;
 end
 
-V_ref = v_d;       % reference volume equals V at BDC
+V_ref = v_d;                % reference volume equals V at BDC
 P_amb=1.01235e5;
-p_ref = P_amb;     % ambient pressure
+p_ref = P_amb;              % ambient pressure
 
 % Heat transfer coefficient calculation
 p_m = p_ref.*(V_ref./V).^gamma;
@@ -62,4 +62,4 @@ A_tot = 2*A_1 + A_2;
 % Heat loss 
 dQ = -coefficient.*(T-Tw).*A_tot; 
 dt = (1/(RPM/60))/360;                      % duration per CA
-dQ_loss = dQ.*dt.*(Ca2-Ca1)./1000;          % total heat loss   [kJ]
+dQ_loss = dQ.*dt.*(Ca2-Ca1)./1000;          % total heat loss [kJ]
