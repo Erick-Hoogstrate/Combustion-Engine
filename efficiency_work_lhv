@@ -1,0 +1,26 @@
+%% EFFICIENCY (via work and LHV)
+
+% Work 
+p_V_array = [V(:,1) p(:,1)];
+p_V_array(p_V_array(:, 2) > Pamb, :) = [];
+
+% The work is calculated via the area under the graph, which represents 2 cyles
+% Therefore the standard outcome will be in [(k)J/2 cycles]
+
+total_work = polyarea(V,p);
+total_work = total_work(1);
+negative_work = polyarea(p_V_array(:,1),p_V_array(:,2));
+
+work = total_work - 2*negative_work; % [J]
+
+Energy_out = work/1000; % [kJ/2 cycles]
+
+% LHV 
+
+% This calculation is standard done per cycle, since mf is [kg/cycle]
+% Therefore you divide by two to make it [kg/2 cycles]
+
+Energy_in = (Q_LHV*mf)/2; % [kJ/2 cycles]
+
+Efficiency_fuel = Energy_out/Energy_in
+
