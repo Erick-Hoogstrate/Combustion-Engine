@@ -35,8 +35,8 @@ hair_a= Yair*hia';                                                          % Ma
 sair_a= Yair*sia';                                                          % same but this thermal part of entropy of air for range of T
 
 %% Ethanol percentage and engine load
-percentage = 5;
-load = "no"; % no,half,full load
+percentage = 15;
+load = "full"; % no,half,full load
 
 %% Molar masses and AF Gasoline blend
 % mol_gas = (100-percentage)*volume*density*molar mass
@@ -206,7 +206,7 @@ Ca_comp_end     = 340; % 340, also adjust in line 30 of dQwall_loss.m
 
 % 3. Combustion
 Ca_comb_start   = Ca_comp_end;      
-Ca_comb_end     = 400; % 400, also adjust in line 32 of dQwall_loss.m           
+Ca_comb_end     = 385; % 400, also adjust in line 32 of dQwall_loss.m           
 dCa_comb        = Ca_comb_end - Ca_comb_start;
 
 % Note that the combustion ends before the exhaust valves open
@@ -392,6 +392,33 @@ p_me = (p1+p2+p3+p4)/4;
 W = p_me * V_dis;
 P_in = W * (50/2);
 mechanical_efficiency = P_out / P_in;
+
+%%
+%Efficiency (via work and LHV)
+
+% Work 
+p_V_array = [V(:,1) p(:,1)];
+p_V_array(p_V_array(:, 2) > Pamb, :) = [];
+
+% The work is calculated via the area under the graph, which represents 2 cyles
+% Therefore the standard outcome will be in [(k)J/2 cycles]
+
+total_work = polyarea(V,p);
+total_work = total_work(1);
+negative_work = polyarea(p_V_array(:,1),p_V_array(:,2));
+
+work = total_work - 2*negative_work; % [J]
+
+Energy_out = work/1000; % [kJ/2 cycles]
+
+% LHV 
+
+% This calculation is standard done per cycle, since mf is [kg/cycle]
+% Therefore you divide by two to make it [kg/2 cycles]
+
+Energy_in = (Q_LHV*mf)/2; % [kJ/2 cycles]
+
+Efficiency_fuel = Energy_out/Energy_in
 
 %%
 % Power
